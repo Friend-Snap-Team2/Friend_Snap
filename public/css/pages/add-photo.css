@@ -1,0 +1,120 @@
+/* Background and Container */
+body {
+    background-color: #f5dbc5; /* Light orange background */
+    margin: 0;
+    padding-bottom: 80px; /* Space for the bottom nav bar */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    padding: 20px;
+}
+
+.page-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Reminder Banner Style */
+.reminder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, #d7e5ff, #cbd9ff);
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 1px solid #b0c4ff;
+}
+
+.reminder-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.reminder-icon { font-size: 28px; }
+.reminder-title { font-weight: bold; color: #3a6fd8; }
+.reminder-text { color: #3a6fd8; font-size: 14px; }
+
+/* Right side: icons + button */
+.reminder-right {
+    display: flex;
+    flex-direction: column;       /* Stack icons vertically */
+    justify-content: center;      /* Center vertically */
+    align-items: center;          /* Center horizontally */
+    gap: 15px;                    /* Space between icons and button */
+    min-width: 80px;
+}
+
+/* Make icons bigger */
+.reminder-right .example,
+.reminder-right .example.bad {
+    font-size: 2rem;              /* Increase size of icons */
+    text-align: center;
+}
+
+/* Button styling */
+.reminder-right .read-banner {
+    margin-top: 5px;
+    background: #4f8df5;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Central Add Box */
+.add-box {
+    margin-top: 25px;
+    background: linear-gradient(180deg, #ff9b3d, #ff7b2d);
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 123, 45, 0.3);
+}
+
+.camera { font-size: 60px; }
+.add-title { font-size: 26px; font-weight: bold; margin: 15px 0; }
+
+.add-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.take-btn, .pick-btn {
+    background: white;
+    color: #333;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Ideas Grid */
+.ideas-title { margin-top: 30px; font-size: 18px; }
+
+.ideas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid works better for mobile-style */
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.idea {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.idea-icon { font-size: 40px; margin-bottom: 5px; }
