@@ -1,0 +1,54 @@
+/* Intro paragraph */
+.help-intro {
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Help sections */
+.help-section {
+  position: relative;
+  background: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* ensures the accent doesn't spill */
+}
+
+/* Subtle gradient accent bar at the top */
+.help-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px; /* slightly thinner for a more elegant look */
+  background: linear-gradient(90deg, #ff8a3d, #ff6a2d);
+}
+
+/* Section headings */
+.help-section h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+/* Section paragraphs */
+.help-section p {
+  margin: 8px 0 0;
+  line-height: 1.5;
+  color: #444;
+}
+
+/* Optional: links inside help sections */
+.help-section a {
+  color: #ff6a2d;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.help-section a:hover {
+  color: #ff8a3d;
+  text-decoration: underline;
+}

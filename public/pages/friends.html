@@ -14,7 +14,7 @@
   <main class="container">
 
     <div class="friends-header">
-      <h1>Friends</h1>
+      
 
       <div class="header-actions">
         <button class="refresh">⟳</button>
@@ -24,13 +24,59 @@
 
 
     <div class="friends-tabs">
-      <button class="tab active">Suggestions</button>
-      <button class="tab">My Friends (0)</button>
+      <button class="tab active" onclick="showTab('suggestions')">Suggestions</button>
+      <button class="tab" onclick="showTab('friends')">My Friends</button>
     </div>
 
 
+    <!-- Suggestions tab content -->
+    <div id="suggestions" class="tab-content">
 
-    <div class="friend-card">
+        <h1 class="title">Add Friends</h1>
+
+        <div class="suggest-card">
+
+          <div class="suggest-info">
+            <div class="friend-avatar">🦊</div>
+            <div class="friend-name">Fast23</div>
+          </div>
+
+          <button class="suggest-add-btn">Add Friend</button>
+
+        </div>
+
+
+        <div class="suggest-card">
+
+          <div class="suggest-info">
+            <div class="friend-avatar gray">🐼</div>
+            <div class="friend-name">Pat55</div>
+          </div>
+
+          <button class="suggest-add-btn">Add Friend</button>
+
+        </div>
+
+
+        <div class="suggest-card">
+
+          <div class="suggest-info">
+            <div class="friend-avatar pink">🐸</div>
+            <div class="friend-name">FrogFan22</div>
+          </div>
+
+          <button class="suggest-add-btn">Add Friend</button>
+
+        </div>
+
+    </div>
+
+    <!-- My Friends tab content -->
+    <div id="friends" class="tab-content" style="display:none">
+
+      <h1 class="title">My Friends</h1>
+
+      <div class="friend-card">
 
       <div class="friend-top">
 
@@ -95,12 +141,14 @@
       </button>
 
     </div>
+    </div>
 
   </main>
 
   <div id="footer"></div>
 
   <script src="/js/global.js"></script>
+  <script src="/js/pages/friends.js"></script>
 
 </body>
 </html>

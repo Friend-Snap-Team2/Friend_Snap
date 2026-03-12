@@ -57,7 +57,7 @@
 }
 
 .tab.active{
-  background:#ff7b3a;
+  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);;
   color:white;
 }
 
@@ -170,4 +170,40 @@
   padding:4px 10px;
   border-radius:10px;
   font-size:11px;
+}
+
+.title{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.suggest-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.suggest-card{
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:20px;
+  width: 50%;
+  display:flex;
+  margin: 20px auto;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  align-items:center;
+}
+
+.suggest-add-btn{
+  margin-left: auto;
+  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);;
+  color:white;
+  border:none;
+  padding:10px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
 }

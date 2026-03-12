@@ -58,6 +58,7 @@ loadComponent('footer', '/components/footer.html').then(() => {
     { path: 'friends', index: 2 },
     { path: 'chat', index: 3 },
     { path: 'me', index: 4 },
+    { path: 'help', index: 5 },
   ];
 
   navItems.forEach(item => item.classList.remove('active'));
