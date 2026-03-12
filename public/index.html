@@ -1,14 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Friend Snap</title>
-  </head>
-  <body>
-    <h1>Welcome to Friend Snap!</h1>
-    <break>
-    <a href="pages/home.html">
-        <button>Home</button>
-    </a>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Friend Snap - Login</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/pages/login.css">
+</head>
+
+<body>
+
+  <div class="login-container">
+
+    <div class="login-box">
+
+      <h1>👻 Friend Snap</h1>
+      <p class="tagline">A place to share with friends</p>
+
+      <!-- Toggle between login and register -->
+      <div class="tab-bar">
+        <button class="tab active" id="loginTab" onclick="showLogin()">Log In</button>
+        <button class="tab" id="registerTab" onclick="showRegister()">Register</button>
+      </div>
+
+      <!-- Error/success message box -->
+      <div class="message" id="message"></div>
+
+      <!-- Login Form -->
+      <div id="loginForm">
+        <input 
+          type="text" 
+          id="loginNickname" 
+          placeholder="Your nickname"
+          class="input"
+        />
+        <input 
+          type="password" 
+          id="loginPassword" 
+          placeholder="Your password"
+          class="input"
+        />
+        <button class="submit-btn" onclick="handleLogin()">Log In</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none">
+        <input 
+          type="text" 
+          id="registerNickname" 
+          placeholder="Choose a nickname"
+          class="input"
+        />
+        <input 
+          type="password" 
+          id="registerPassword" 
+          placeholder="Choose a password"
+          class="input"
+        />
+        <input 
+          type="password" 
+          id="registerConfirmPassword" 
+          placeholder="Confirm your password"
+          class="input"
+        />
+        <button class="submit-btn" onclick="handleRegister()">Create Account</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/pages/login.js"></script>
+
+</body>
 </html>

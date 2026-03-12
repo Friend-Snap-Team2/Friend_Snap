@@ -1,0 +1,116 @@
+/* Full page centered layout */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f4f6f8;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The white card in the centre */
+.login-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-box {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 35px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Title */
+.login-box h1 {
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 25px;
+  margin-top: 0;
+}
+
+/* Login / Register tab buttons */
+.tab-bar {
+  display: flex;
+  background: #f4f6f8;
+  border-radius: 25px;
+  padding: 4px;
+  margin-bottom: 25px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: 20px;
+  font-size: 15px;
+  cursor: pointer;
+  color: #888;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  background: white;
+  color: #ff7b3a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Input fields */
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input:focus {
+  border-color: #4f8df5;
+}
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #ff8a3d, #ff6a2d);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: opacity 0.2s;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+/* Error / success message */
+.message {
+  display: none;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  background: #fff0f0;
+}

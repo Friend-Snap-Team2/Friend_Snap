@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "1773312562643",
+      "nickname": "test123",
+      "password": "$2b$10$8NkbhHih258FPyfIvQovBuYVbC1BlL6hfATQUeZsNswjUM8vzPphG",
+      "createdAt": "2026-03-12T10:49:22.643Z"
+    },
+    {
+      "id": "1773313022200",
+      "nickname": "test",
+      "password": "$2b$10$NLt9ay03YeAS7ZWS.BGjWOjX/imggbp5mijVw380lj.fQkMk2PVNO",
+      "createdAt": "2026-03-12T10:57:02.200Z"
+    },
+    {
+      "id": "1773313050103",
+      "nickname": "seanB",
+      "password": "$2b$10$Eh21ZnmkUCiTI/uBe9rKIu6oHes0YcPQej/z5fBjrXv3cU.hQ1QzK",
+      "createdAt": "2026-03-12T10:57:30.103Z"
+    }
+  ]
+}

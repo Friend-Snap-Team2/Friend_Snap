@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Friend Snap - Home</title>
   <link rel="stylesheet" href="/css/global.css">
-  <link rel="stylesheet" href="/css/pages/home.css">
+  <link rel="stylesheet" href="/css/pages/me.css">
 </head>
 
 <body>
@@ -13,13 +13,61 @@
 
   <main class="container">
 
-    <h2>Me page</h2>
+    <div class="profile-card">
+
+    <button class="tts-btn">🔊 Text to speech</button>
+
+    <div class="profile-avatar">
+      <img src="robot.png" alt="avatar">
+    </div>
+
+    <h2 class="username"></h2>
+    <p class="member-since">Member since 19/02/2026</p>
+
+  </div>
+
+
+  <div class="photos-card">
+    <div class="photos-icon">📷</div>
+
+    <div class="photos-text">
+      <div class="photos-title">My Photos</div>
+      <div class="photos-sub">See all your shared photos</div>
+    </div>
+  </div>
+
+
+  <div class="rules-card">
+
+    <div class="rules-header">
+      🛡️ <span>Remember Our Rules</span>
+    </div>
+
+    <div class="rule">
+      🖼️ Share photos of things, not people
+    </div>
+
+    <div class="rule">
+      🙂 Be kind to everyone
+    </div>
+
+    <div class="rule">
+      ❗ Report anything that makes you uncomfortable
+    </div>
+
+  </div>
+
+
+  <button class="logout-btn" onclick="logout()">Log Out>
+    ↪ Log Out
+  </button>
 
   </main>
 
   <div id="footer"></div>
 
   <script src="/js/global.js"></script>
+  <script src="/js/pages/me.js"></script>
 
 </body>
 </html>
