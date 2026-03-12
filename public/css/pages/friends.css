@@ -1,0 +1,173 @@
+
+/* header */
+
+.friends-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  margin-bottom:20px;
+}
+
+.friends-header h1{
+  font-size:26px;
+}
+
+.header-actions{
+  position:absolute;
+  right:0;
+  display:flex;
+  gap:10px;
+}
+
+.refresh{
+  border:none;
+  background:none;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.listen{
+  background:#4f8df5;
+  border:none;
+  color:white;
+  padding:8px 16px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+
+
+/* tabs */
+
+.friends-tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:25px;
+}
+
+.tab{
+  border:none;
+  padding:12px 28px;
+  border-radius:25px;
+  background:#e9edf1;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.tab.active{
+  background:#ff7b3a;
+  color:white;
+}
+
+
+
+/* friend card */
+
+.friend-card{
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  width:50%;     
+  margin: 20px auto;
+}
+
+.friend-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+/* user section */
+
+.friend-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.friend-avatar{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  background:#ffe9a8;
+}
+
+.friend-avatar.gray{
+  background:#e4e7eb;
+}
+
+.friend-avatar.pink{
+  background:#ffd7e2;
+}
+
+.friend-name{
+  font-weight:bold;
+  font-size:18px;
+}
+
+
+
+/* photo */
+
+.friend-photo{
+  width:70px;
+  height:70px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+
+
+/* comment button */
+
+.comment-btn{
+  width:100%;
+  background:#4f8df5;
+  color:white;
+  border:none;
+  border-radius:12px;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+
+
+/* notification bubble */
+
+.bubble{
+  background:white;
+  color:#4f8df5;
+  font-size:12px;
+  font-weight:bold;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-right:10px;
+}
+
+
+
+/* once tag */
+
+.once{
+  background:rgba(255,255,255,0.2);
+  padding:4px 10px;
+  border-radius:10px;
+  font-size:11px;
+}
