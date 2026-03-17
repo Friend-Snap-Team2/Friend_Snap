@@ -17,6 +17,7 @@
 
 <h2 class="page-title">Add Photo</h2>
 
+
 <div class="top-controls">
     <div class="tts-container">
         <span>Text to speech</span>
@@ -47,58 +48,86 @@ Share photos of things, not people.
 </div>
 
 
-<!-- Add Photo Box -->
-
 <div class="add-box">
-
-<div class="camera">📷</div>
-
-<div class="add-title">Tap to add a photo</div>
-
-<div class="add-buttons">
-
-<button class="take-btn">📸 Take Photo</button>
-
-<button class="pick-btn">🖼 Pick Photo</button>
-
+  <div class="camera">📷</div>
+  <div class="add-title">Tap to add a photo</div>
+  
+  <!-- Upload Photos Button -->
+  <button id="uploadPhotosBtn">⬆️ Upload Photos</button>
+  <input type="file" id="uploadPhotosInput" accept="image/*" multiple hidden>
+  
+  <!-- Gallery container for uploaded images -->
+  <div id="uploadGallery" class="gallery"></div>
 </div>
-
-</div>
-
 
 <!-- Ideas -->
 
 <h3 class="ideas-title">Ideas for photos</h3>
 
 <div class="ideas">
-
-<div class="idea">
-<div class="idea-icon">🐾</div>
-<div>Animals</div>
-</div>
-
-<div class="idea">
-<div class="idea-icon">🍽</div>
-<div>Food</div>
-</div>
-
-<div class="idea">
-<div class="idea-icon">🎨</div>
-<div>Art</div>
-</div>
-
-<div class="idea">
-<div class="idea-icon">📍</div>
-<div>Places</div>
-</div>
-
+  <div class="idea">
+    <div class="idea-icon">🐾</div>
+    <div><a href="animals.html">Animals</a></div>
+  </div>
+  <div class="idea">
+    <div class="idea-icon">🍽</div>
+    <div><a href="food.html">Food</a></div>
+  </div>
+  <div class="idea">
+    <div class="idea-icon">🎨</div>
+    <div><a href="art.html">Art</a></div>
+  </div>
+  <div class="idea">
+    <div class="idea-icon">📍</div>
+    <div><a href="places.html">Places</a></div>
+  </div>
 </div>
 
 </main>
 
+<script>
+// JS upload logic (exactly like category pages)
+const uploadBtn = document.getElementById("uploadPhotosBtn");
+const uploadInput = document.getElementById("uploadPhotosInput");
+const gallery = document.getElementById("uploadGallery");
+
+function showPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.createElement("img");
+    img.src = e.target.result;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.objectFit = "cover";
+    img.style.margin = "10px";
+    img.style.borderRadius = "12px";
+    gallery.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+// Click the button → open file picker
+uploadBtn.addEventListener("click", () => uploadInput.click());
+
+// Handle selected files
+uploadInput.addEventListener("change", (event) => {
+  const files = Array.from(event.target.files);
+  files.forEach(file => {
+    if (!file.type.startsWith("image/")) return;
+    showPreview(file);
+  });
+  uploadInput.value = ""; // reset to allow re-upload
+});
+</script>
+
+</body>
+
 <div id="footer"></div>
 
 <script src="/js/global.js"></script>
+<script src="js/add-photo.js"></script>
+
+
 
 </body>
 </html>
