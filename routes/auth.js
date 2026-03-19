@@ -4,6 +4,22 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../data/db');
 
+// Middleware to authenticate requests using Bearer token
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ message: 'Missing authorization header' });
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') return res.status(401).json({ message: 'Invalid authorization format' });
+  const token = parts[1];
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+}
+
 // =====================================
 // REGISTER - POST /api/auth/register
 // =====================================
@@ -107,3 +123,54 @@ router.post('/login', async (req, res) => {
 
 
 module.exports = router;
+
+// =====================================
+// SUGGESTIONS - GET /api/auth/suggestions
+// Returns list of other users excluding current user and blocked users
+// =====================================
+router.get('/suggestions', authenticateToken, (req, res) => {
+  try {
+    const currentUser = db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'User not found' });
+
+    const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
+
+    const users = db.getUsers()
+      .filter(u => u.id !== req.user.id && !blocked.includes(u.id))
+      .map(u => ({ id: u.id, nickname: u.nickname, createdAt: u.createdAt }));
+
+    res.json({ users });
+  } catch (err) {
+    console.error('Suggestions error:', err);
+    res.status(500).json({ message: 'Could not load suggestions' });
+  }
+});
+
+// =====================================
+// BLOCK - POST /api/auth/block
+// Body: { id: '<userIdToBlock>' }
+// Adds the target user id to the current user's blocked list
+// =====================================
+router.post('/block', authenticateToken, (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ message: 'Missing id to block' });
+
+    const target = db.findUserById(id);
+    if (!target) return res.status(404).json({ message: 'Target user not found' });
+
+    const currentUser = db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'User not found' });
+
+    const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
+    if (!blocked.includes(id)) {
+      blocked.push(id);
+      db.updateUser(currentUser.id, { blocked });
+    }
+
+    res.json({ message: 'User blocked' });
+  } catch (err) {
+    console.error('Block error:', err);
+    res.status(500).json({ message: 'Could not block user' });
+  }
+});

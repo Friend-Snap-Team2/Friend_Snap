@@ -36,14 +36,27 @@ function findUserById(id) {
 // Save a new user to the database
 function createUser(userData) {
   const db = readDB();
+  // ensure blocked list exists for new users
+  if (!userData.blocked) userData.blocked = [];
   db.users.push(userData);
   writeDB(db);
   return userData;
+}
+
+// Update an existing user by id with partial data
+function updateUser(id, updates) {
+  const db = readDB();
+  const idx = db.users.findIndex(u => u.id === id);
+  if (idx === -1) return null;
+  db.users[idx] = Object.assign({}, db.users[idx], updates);
+  writeDB(db);
+  return db.users[idx];
 }
 
 module.exports = {
   getUsers,
   findUserByNickname,
   findUserById,
-  createUser
+  createUser,
+  updateUser
 };

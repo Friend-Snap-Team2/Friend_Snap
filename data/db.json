@@ -17,6 +17,17 @@
       "nickname": "seanB",
       "password": "$2b$10$Eh21ZnmkUCiTI/uBe9rKIu6oHes0YcPQej/z5fBjrXv3cU.hQ1QzK",
       "createdAt": "2026-03-12T10:57:30.103Z"
+    },
+    {
+      "id": "1773953132805",
+      "nickname": "FriendlyGuy",
+      "password": "$2b$10$BzHouq4TU23gJe3UfnbK6eOttDhSikCrHahKRwwVfh8qqvPpUTRwm",
+      "createdAt": "2026-03-19T20:45:32.805Z",
+      "blocked": [
+        "1773312562643",
+        "1773313022200",
+        "1773313050103"
+      ]
     }
   ]
 }
