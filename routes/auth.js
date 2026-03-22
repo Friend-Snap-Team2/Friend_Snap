@@ -160,16 +160,70 @@ router.post('/block', authenticateToken, async (req, res) => {
     const currentUser = await db.findUserById(req.user.id);
     if (!currentUser) return res.status(404).json({ message: 'User not found' });
 
+    // Add to blocked list
     const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
     if (!blocked.includes(id)) {
       blocked.push(id);
-      await db.updateUser(currentUser._id, { blocked });
     }
+
+    // Remove from friends list
+    const friends = Array.isArray(currentUser.friends) ? currentUser.friends : [];
+    const updatedFriends = friends.filter(friendId => friendId !== id);
+
+    // Save both updates together
+    await db.updateUser(currentUser._id, { blocked, friends: updatedFriends });
 
     res.json({ message: 'User blocked' });
   } catch (err) {
     console.error('Block error:', err);
     res.status(500).json({ message: 'Could not block user' });
+  }
+});
+
+// =====================================
+// UNBLOCK - POST /api/auth/unblock
+// =====================================
+router.post('/unblock', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ message: 'Missing user id' });
+
+    const currentUser = await db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'User not found' });
+
+    const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
+    const updated = blocked.filter(blockedId => blockedId !== id);
+    await db.updateUser(currentUser._id, { blocked: updated });
+
+    res.json({ message: 'User unblocked' });
+  } catch (err) {
+    console.error('Unblock error:', err);
+    res.status(500).json({ message: 'Could not unblock user' });
+  }
+});
+
+// =====================================
+// GET BLOCKED - GET /api/auth/blocked
+// =====================================
+router.get('/blocked', authenticateToken, async (req, res) => {
+  try {
+    const currentUser = await db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'User not found' });
+
+    const blockedIds = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
+
+    const blocked = await Promise.all(
+      blockedIds.map(id => db.findUserById(id))
+    );
+
+    const validBlocked = blocked
+      .filter(u => u !== null)
+      .map(u => ({ id: u._id, nickname: u.nickname, avatar: u.avatar ?? 0 }));
+
+    res.json({ blocked: validBlocked });
+  } catch (err) {
+    console.error('Blocked list error:', err);
+    res.status(500).json({ message: 'Could not load blocked users' });
   }
 });
 

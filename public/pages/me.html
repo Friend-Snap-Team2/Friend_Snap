@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Friend Snap - Home</title>
+  <title>Friend Snap - Me</title>
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/pages/me.css">
 </head>
@@ -14,51 +14,48 @@
   <main class="container">
 
     <div class="profile-card">
-
-    <div class="profile-avatar">
-      <img src="/assets/avatars/avatar-0.png" alt="avatar">
+      <div class="profile-avatar">
+        <img src="/assets/avatars/avatar-0.png" alt="avatar">
+      </div>
+      <h2 class="username"></h2>
+      <p class="member-since">Member since 19/02/2026</p>
     </div>
 
-    <h2 class="username"></h2>
-    <p class="member-since">Member since 19/02/2026</p>
-
-  </div>
-
-
-  <div class="photos-card">
-    <div class="photos-icon">📷</div>
-
-    <div class="photos-text">
-      <div class="photos-title">My Photos</div>
-      <div class="photos-sub">See all your shared photos</div>
-    </div>
-  </div>
-
-
-  <div class="rules-card">
-
-    <div class="rules-header">
-      🛡️ <span>Remember Our Rules</span>
+    <div class="photos-card">
+      <div class="photos-icon">📷</div>
+      <div class="photos-text">
+        <div class="photos-title">My Photos</div>
+        <div class="photos-sub">See all your shared photos</div>
+      </div>
     </div>
 
-    <div class="rule">
-      🖼️ Share photos of things, not people
+    <div class="rules-card">
+      <div class="rules-header">
+        🛡️ <span>Remember Our Rules</span>
+      </div>
+      <div class="rule">🖼️ Share photos of things, not people</div>
+      <div class="rule">🙂 Be kind to everyone</div>
+      <div class="rule">❗ Report anything that makes you uncomfortable</div>
     </div>
 
-    <div class="rule">
-      🙂 Be kind to everyone
+    <button class="blocked-btn" onclick="openBlockedPopup()">
+      🚫 Blocked Users
+    </button>
+
+    <!-- Blocked users popup -->
+    <div id="blocked-popup" class="popup-overlay" style="display:none">
+      <div class="popup-box">
+        <div class="popup-header">
+          <span>🚫 Blocked Users</span>
+          <button class="popup-close" onclick="closeBlockedPopup()">✕</button>
+        </div>
+        <div id="blocked-list"></div>
+      </div>
     </div>
 
-    <div class="rule">
-      ❗ Report anything that makes you uncomfortable
-    </div>
-
-  </div>
-
-
-  <button class="logout-btn" onclick="logout()">
-    ↪ Log Out
-  </button>
+    <button class="logout-btn" onclick="logout()">
+      ↪ Log Out
+    </button>
 
   </main>
 

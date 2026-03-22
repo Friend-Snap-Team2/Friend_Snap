@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
 
+  // Track who is currently being chatted with
+  let currentFriend = null;
+
   // =====================================
   // SWITCH VIEWS
   // =====================================
   function openChat(friend) {
+    // Store current friend
+    currentFriend = friend;
+
     // Fill in friend data
     document.getElementById('chatNickname').textContent = friend.nickname;
     document.getElementById('chatAvatar').src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
@@ -19,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.showChatList = function() {
+    // Clear current friend
+    currentFriend = null;
+
     // Show header and footer again
     document.getElementById('header').style.display = 'block';
     document.getElementById('footer').style.display = 'block';
@@ -27,6 +36,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('chat-window-view').style.display = 'none';
     document.getElementById('chat-list-view').style.display = 'block';
   }
+
+  // =====================================
+  // BLOCK FROM CHAT
+  // =====================================
+  document.querySelector('.chat-block-btn').addEventListener('click', async () => {
+    if (!currentFriend) return;
+
+    try {
+      const r = await fetch('/api/auth/block', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ id: currentFriend.id })
+      });
+
+      if (r.ok) {
+        // Go back to chat list and reload friends
+        showChatList();
+        loadFriends();
+      } else {
+        const err = await r.json().catch(() => ({}));
+        alert(err.message || 'Could not block user');
+      }
+    } catch (err) {
+      console.error('Block error:', err);
+    }
+  });
 
   // =====================================
   // LOAD FRIENDS INTO CHAT LIST
@@ -51,33 +89,33 @@ document.addEventListener('DOMContentLoaded', () => {
     friendsEl.innerHTML = '';
 
     if (!friends.length) {
-        const empty = document.createElement('p');
-        empty.textContent = 'No friends yet!';
-        empty.style.textAlign = 'center';
-        empty.style.color = '#888';
-        empty.style.marginBottom = '15px';
+      const empty = document.createElement('p');
+      empty.textContent = 'No friends yet!';
+      empty.style.textAlign = 'center';
+      empty.style.color = '#888';
+      empty.style.marginBottom = '15px';
 
-        const addBtn = document.createElement('button');
-        addBtn.textContent = '👥 Add Friends';
-        addBtn.style.display = 'block';
-        addBtn.style.margin = '0 auto';
-        addBtn.style.background = 'linear-gradient(90deg, #ff8a3d, #ff6a2d)';
-        addBtn.style.color = 'white';
-        addBtn.style.border = 'none';
-        addBtn.style.padding = '12px 25px';
-        addBtn.style.borderRadius = '25px';
-        addBtn.style.fontWeight = 'bold';
-        addBtn.style.cursor = 'pointer';
-        addBtn.style.fontSize = '16px';
+      const addBtn = document.createElement('button');
+      addBtn.textContent = '👥 Add Friends';
+      addBtn.style.display = 'block';
+      addBtn.style.margin = '0 auto';
+      addBtn.style.background = 'linear-gradient(90deg, #ff8a3d, #ff6a2d)';
+      addBtn.style.color = 'white';
+      addBtn.style.border = 'none';
+      addBtn.style.padding = '12px 25px';
+      addBtn.style.borderRadius = '25px';
+      addBtn.style.fontWeight = 'bold';
+      addBtn.style.cursor = 'pointer';
+      addBtn.style.fontSize = '16px';
 
-        addBtn.addEventListener('click', () => {
-            window.location.href = '/pages/friends.html';
-        });
+      addBtn.addEventListener('click', () => {
+        window.location.href = '/pages/friends.html';
+      });
 
-        friendsEl.appendChild(empty);
-        friendsEl.appendChild(addBtn);
-        return;
-        }
+      friendsEl.appendChild(empty);
+      friendsEl.appendChild(addBtn);
+      return;
+    }
 
     friends.forEach(friend => {
       const card = document.createElement('div');
