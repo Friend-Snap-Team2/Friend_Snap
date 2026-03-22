@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const data = await res.json();
+      console.log('Suggestions data:', data.users);
       renderSuggestions(data.users || []);
     } catch (err) {
       console.error('Suggestions fetch error', err);
@@ -41,7 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const icon = document.createElement('div');
       icon.className = 'profile-icon';
-      icon.textContent = '🙂';
+
+      const avatarImg = document.createElement('img');
+      avatarImg.src = `/assets/avatars/avatar-${user.avatar ?? 0}.png`;
+      avatarImg.alt = user.nickname;
+
+      icon.appendChild(avatarImg);
 
       const info = document.createElement('div');
       const name = document.createElement('div');

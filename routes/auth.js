@@ -45,6 +45,7 @@ router.post('/register', async (req, res) => {
     const newUser = {
       nickname: nickname,
       password: hashedPassword,
+      avatar: req.body.avatar ?? 0,
       createdAt: new Date().toISOString()
     };
 
@@ -60,7 +61,8 @@ router.post('/register', async (req, res) => {
       message: 'Account created successfully',
       token: token,
       nickname: savedUser.nickname,
-      createdAt: savedUser.createdAt
+      createdAt: savedUser.createdAt,
+      avatar: savedUser.avatar
     });
 
   } catch (error) {
@@ -106,7 +108,8 @@ router.post('/login', async (req, res) => {
       message: 'Logged in successfully',
       token: token,
       nickname: user.nickname,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      avatar: user.avatar ?? 0
     });
 
   } catch (error) {
@@ -128,7 +131,7 @@ router.get('/suggestions', authenticateToken, async (req, res) => {
     const allUsers = await db.getUsers();
     const users = allUsers
       .filter(u => u._id.toString() !== req.user.id && !blocked.includes(u._id.toString()))
-      .map(u => ({ id: u._id, nickname: u.nickname, createdAt: u.createdAt }));
+      .map(u => ({ id: u._id, nickname: u.nickname, createdAt: u.createdAt, avatar: u.avatar ?? 0 }));
 
     res.json({ users });
   } catch (err) {

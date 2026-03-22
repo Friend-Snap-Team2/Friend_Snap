@@ -113,3 +113,10 @@ body {
   padding: 10px 18px;
   border-radius: 20px;
 }
+
+.avatar img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}

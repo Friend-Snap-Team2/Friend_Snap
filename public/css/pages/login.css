@@ -114,3 +114,35 @@ body {
   font-size: 14px;
   background: #fff0f0;
 }
+
+.avatar-label {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.avatar-option {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border 0.2s;
+}
+
+.avatar-option:hover {
+  border-color: #ff8a3d;
+}
+
+.avatar-option.selected {
+  border-color: #ff7b3a;
+  box-shadow: 0 0 0 2px #ff7b3a;
+}

@@ -14,37 +14,30 @@ async function loadComponent(id, file) {
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('nickname');
+  localStorage.removeItem('avatar');
+  localStorage.removeItem('createdAt');
   window.location.href = '/index.html';
-}
-
-// Fills in the me.html profile page with user data
-function loadProfileData() {
-  const nickname = localStorage.getItem('nickname');
-  const createdAt = localStorage.getItem('createdAt');
-
-  const usernameEl = document.querySelector('.username');
-  if (usernameEl) usernameEl.textContent = nickname;
-
-  const dateEl = document.querySelector('.member-since');
-  if (dateEl && createdAt) {
-    const date = new Date(createdAt);
-    const formatted = date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-    dateEl.textContent = 'Member since ' + formatted;
-  }
 }
 
 // Run on every page
 checkAuth();
 
+function getAvatarPath(index) {
+  return `/assets/avatars/avatar-${index}.png`;
+}
+
 loadComponent('header', '/components/header.html').then(() => {
   const nickname = localStorage.getItem('nickname');
+  const avatar = localStorage.getItem('avatar') ?? 0;
+
   const usernameElement = document.querySelector('.username');
   if (usernameElement && nickname) {
     usernameElement.textContent = nickname;
+  }
+
+  const avatarElement = document.querySelector('.avatar img');
+  if (avatarElement) {
+    avatarElement.src = `/assets/avatars/avatar-${avatar}.png`;
   }
 });
 

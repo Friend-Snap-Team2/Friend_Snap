@@ -1,11 +1,3 @@
-/* Background and Container */
-body {
-    background-color: #f5dbc5; /* Light orange background */
-    margin: 0;
-    padding-bottom: 80px; /* Space for the bottom nav bar */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 .container {
     padding: 20px;
     position: relative; /* ensure stacking works */

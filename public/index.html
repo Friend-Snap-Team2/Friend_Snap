@@ -44,24 +44,14 @@
 
       <!-- Register Form -->
       <div id="registerForm" style="display:none">
-        <input 
-          type="text" 
-          id="registerNickname" 
-          placeholder="Choose a nickname"
-          class="input"
-        />
-        <input 
-          type="password" 
-          id="registerPassword" 
-          placeholder="Choose a password"
-          class="input"
-        />
-        <input 
-          type="password" 
-          id="registerConfirmPassword" 
-          placeholder="Confirm your password"
-          class="input"
-        />
+        <input type="text" id="registerNickname" placeholder="Choose a nickname" class="input"/>
+        <input type="password" id="registerPassword" placeholder="Choose a password" class="input"/>
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm your password" class="input"/>
+
+        <!-- Avatar picker -->
+        <p class="avatar-label">Choose your avatar</p>
+        <div class="avatar-grid" id="avatarGrid"></div>
+
         <button class="submit-btn" onclick="handleRegister()">Create Account</button>
       </div>
 
