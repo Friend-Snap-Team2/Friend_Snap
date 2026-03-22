@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const data = await res.json();
       console.log('Suggestions data:', data.users);
-      renderSuggestions(data.users || []);
+      renderSuggestions((data.users || []).slice(0, 2));
     } catch (err) {
       console.error('Suggestions fetch error', err);
     }

@@ -129,8 +129,14 @@ router.get('/suggestions', authenticateToken, async (req, res) => {
     const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
 
     const allUsers = await db.getUsers();
+    const friends = Array.isArray(currentUser.friends) ? currentUser.friends : [];
+
     const users = allUsers
-      .filter(u => u._id.toString() !== req.user.id && !blocked.includes(u._id.toString()))
+      .filter(u => 
+        u._id.toString() !== req.user.id &&           // exclude self
+        !blocked.includes(u._id.toString()) &&         // exclude blocked
+        !friends.includes(u._id.toString())            // exclude existing friends
+      )
       .map(u => ({ id: u._id, nickname: u.nickname, createdAt: u.createdAt, avatar: u.avatar ?? 0 }));
 
     res.json({ users });
@@ -164,6 +170,64 @@ router.post('/block', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error('Block error:', err);
     res.status(500).json({ message: 'Could not block user' });
+  }
+});
+
+
+// =====================================
+// ADD FRIEND - POST /api/auth/addfriend
+// Body: { id: '<userIdToAdd>' }
+// =====================================
+router.post('/addfriend', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ message: 'Missing user id' });
+
+    const target = await db.findUserById(id);
+    if (!target) return res.status(404).json({ message: 'User not found' });
+
+    const currentUser = await db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'Current user not found' });
+
+    const friends = Array.isArray(currentUser.friends) ? currentUser.friends : [];
+
+    if (!friends.includes(id)) {
+      friends.push(id);
+      await db.updateUser(currentUser._id, { friends });
+    }
+
+    res.json({ message: 'Friend added' });
+  } catch (err) {
+    console.error('Add friend error:', err);
+    res.status(500).json({ message: 'Could not add friend' });
+  }
+});
+
+// =====================================
+// GET FRIENDS - GET /api/auth/friends
+// Returns full data for each friend
+// =====================================
+router.get('/friends', authenticateToken, async (req, res) => {
+  try {
+    const currentUser = await db.findUserById(req.user.id);
+    if (!currentUser) return res.status(404).json({ message: 'User not found' });
+
+    const friendIds = Array.isArray(currentUser.friends) ? currentUser.friends : [];
+
+    // Fetch each friend's data
+    const friends = await Promise.all(
+      friendIds.map(id => db.findUserById(id))
+    );
+
+    // Filter out any null results (deleted accounts etc)
+    const validFriends = friends
+      .filter(f => f !== null)
+      .map(f => ({ id: f._id, nickname: f.nickname, avatar: f.avatar ?? 0 }));
+
+    res.json({ friends: validFriends });
+  } catch (err) {
+    console.error('Friends list error:', err);
+    res.status(500).json({ message: 'Could not load friends' });
   }
 });
 

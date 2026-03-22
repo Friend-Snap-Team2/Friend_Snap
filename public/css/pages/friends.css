@@ -1,4 +1,3 @@
-
 /* header */
 
 .friends-header{
@@ -36,8 +35,6 @@
   cursor:pointer;
 }
 
-
-
 /* tabs */
 
 .friends-tabs{
@@ -57,22 +54,38 @@
 }
 
 .tab.active{
-  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);;
+  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);
   color:white;
 }
 
+/* friend card - matches home page card style */
 
-
-/* friend card */
-
-.friend-card{
-  background:white;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:20px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-  width:50%;     
+.friend-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px 30px;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 60%;
   margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* block button - identical to home page */
+
+.friend-block-btn{
+  position:absolute;
+  top:15px;
+  right:15px;
+  background:#ff3b30;
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:10px;
+  font-size:12px;
+  cursor:pointer;
 }
 
 .friend-top{
@@ -94,27 +107,22 @@
   width:50px;
   height:50px;
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  background:#ffe9a8;
+  overflow:hidden;
+  background:#f0f0f0;
+  flex-shrink:0;
 }
 
-.friend-avatar.gray{
-  background:#e4e7eb;
-}
-
-.friend-avatar.pink{
-  background:#ffd7e2;
+.friend-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
 }
 
 .friend-name{
   font-weight:bold;
   font-size:18px;
 }
-
-
 
 /* photo */
 
@@ -124,8 +132,6 @@
   object-fit:cover;
   border-radius:8px;
 }
-
-
 
 /* comment button */
 
@@ -143,8 +149,6 @@
   font-weight:bold;
 }
 
-
-
 /* notification bubble */
 
 .bubble{
@@ -161,8 +165,6 @@
   margin-right:10px;
 }
 
-
-
 /* once tag */
 
 .once{
@@ -177,33 +179,34 @@
   margin-bottom:20px;
 }
 
+/* suggestions */
+
 .suggest-info{
   display:flex;
   align-items:center;
   gap:12px;
 }
 
-.suggest-card{
-  background:white;
-  border-radius:16px;
-  padding:18px;
+.suggest-title{
+  text-align:center;
   margin-bottom:20px;
-  width: 50%;
-  display:flex;
-  margin: 20px auto;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-  align-items:center;
+  font-size:22px;
 }
 
 .suggest-add-btn{
-  margin-left: auto;
-  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);;
+  background:linear-gradient(90deg, #ff8a3d, #ff6a2d);
   color:white;
   border:none;
   padding:10px 18px;
   border-radius:12px;
   cursor:pointer;
   font-weight:bold;
+  white-space:nowrap;
+}
+
+.card-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-shrink: 0;
 }

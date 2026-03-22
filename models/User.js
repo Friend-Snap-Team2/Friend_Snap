@@ -13,9 +13,13 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: Number,
-    default: 0  // defaults to first avatar if none chosen
+    default: 0
   },
   blocked: {
+    type: [String],
+    default: []
+  },
+  friends: {
     type: [String],
     default: []
   },
