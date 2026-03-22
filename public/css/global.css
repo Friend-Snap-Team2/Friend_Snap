@@ -120,3 +120,15 @@ body {
   border-radius: 50%;
   object-fit: cover;
 }
+
+.header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-logo img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}

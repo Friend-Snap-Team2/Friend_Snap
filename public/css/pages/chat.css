@@ -79,11 +79,31 @@
 .chat-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 15px 20px;
   background: white;
   border-bottom: 1px solid #ddd;
   border-radius: 15px 15px 0 0;
+  position: relative;
+}
+
+.chat-header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chat-header-logo img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+/* ✅ merged two definitions into one */
+.chat-header-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
 }
 
 .chat-back-btn {
@@ -123,11 +143,6 @@
 .chat-online {
   font-size: 12px;
   color: #34c759;
-}
-
-.chat-header-actions {
-  display: flex;
-  gap: 10px;
 }
 
 .chat-read-btn {
