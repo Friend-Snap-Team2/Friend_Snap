@@ -24,7 +24,6 @@ function authenticateToken(req, res, next) {
 // REGISTER - POST /api/auth/register
 // =====================================
 router.post('/register', async (req, res) => {
-
   try {
     const { nickname, password } = req.body;
 
@@ -34,7 +33,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    const existingUser = db.findUserByNickname(nickname);
+    const existingUser = await db.findUserByNickname(nickname);
     if (existingUser) {
       return res.status(400).json({ 
         message: 'That nickname is already taken' 
@@ -44,39 +43,36 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
-      id: Date.now().toString(),
       nickname: nickname,
       password: hashedPassword,
       createdAt: new Date().toISOString()
     };
 
-    db.createUser(newUser);
+    const savedUser = await db.createUser(newUser);
 
     const token = jwt.sign(
-      { id: newUser.id, nickname: newUser.nickname },
+      { id: savedUser._id, nickname: savedUser.nickname },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     res.status(201).json({
-    message: 'Account created successfully',
-    token: token,
-    nickname: newUser.nickname,
-    createdAt: newUser.createdAt
+      message: 'Account created successfully',
+      token: token,
+      nickname: savedUser.nickname,
+      createdAt: savedUser.createdAt
     });
 
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ message: 'Something went wrong, please try again' });
   }
-
 });
 
 // =====================================
 // LOGIN - POST /api/auth/login
 // =====================================
 router.post('/login', async (req, res) => {
-
   try {
     const { nickname, password } = req.body;
 
@@ -86,7 +82,7 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    const user = db.findUserByNickname(nickname);
+    const user = await db.findUserByNickname(nickname);
     if (!user) {
       return res.status(400).json({ 
         message: 'No account found with that nickname' 
@@ -101,43 +97,38 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, nickname: user.nickname },
+      { id: user._id, nickname: user.nickname },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     res.json({
-    message: 'Logged in successfully',
-    token: token,
-    nickname: user.nickname,
-    createdAt: user.createdAt
+      message: 'Logged in successfully',
+      token: token,
+      nickname: user.nickname,
+      createdAt: user.createdAt
     });
 
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Something went wrong, please try again' });
   }
-
 });
-
-
-
-module.exports = router;
 
 // =====================================
 // SUGGESTIONS - GET /api/auth/suggestions
-// Returns list of other users excluding current user and blocked users
 // =====================================
-router.get('/suggestions', authenticateToken, (req, res) => {
+router.get('/suggestions', authenticateToken, async (req, res) => {
   try {
-    const currentUser = db.findUserById(req.user.id);
+    const currentUser = await db.findUserById(req.user.id);
     if (!currentUser) return res.status(404).json({ message: 'User not found' });
 
     const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
 
-    const users = db.getUsers()
-      .filter(u => u.id !== req.user.id && !blocked.includes(u.id))
-      .map(u => ({ id: u.id, nickname: u.nickname, createdAt: u.createdAt }));
+    const allUsers = await db.getUsers();
+    const users = allUsers
+      .filter(u => u._id.toString() !== req.user.id && !blocked.includes(u._id.toString()))
+      .map(u => ({ id: u._id, nickname: u.nickname, createdAt: u.createdAt }));
 
     res.json({ users });
   } catch (err) {
@@ -148,24 +139,22 @@ router.get('/suggestions', authenticateToken, (req, res) => {
 
 // =====================================
 // BLOCK - POST /api/auth/block
-// Body: { id: '<userIdToBlock>' }
-// Adds the target user id to the current user's blocked list
 // =====================================
-router.post('/block', authenticateToken, (req, res) => {
+router.post('/block', authenticateToken, async (req, res) => {
   try {
     const { id } = req.body;
     if (!id) return res.status(400).json({ message: 'Missing id to block' });
 
-    const target = db.findUserById(id);
+    const target = await db.findUserById(id);
     if (!target) return res.status(404).json({ message: 'Target user not found' });
 
-    const currentUser = db.findUserById(req.user.id);
+    const currentUser = await db.findUserById(req.user.id);
     if (!currentUser) return res.status(404).json({ message: 'User not found' });
 
     const blocked = Array.isArray(currentUser.blocked) ? currentUser.blocked : [];
     if (!blocked.includes(id)) {
       blocked.push(id);
-      db.updateUser(currentUser.id, { blocked });
+      await db.updateUser(currentUser._id, { blocked });
     }
 
     res.json({ message: 'User blocked' });
@@ -174,3 +163,5 @@ router.post('/block', authenticateToken, (req, res) => {
     res.status(500).json({ message: 'Could not block user' });
   }
 });
+
+module.exports = router;
