@@ -1,155 +1,512 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
 
-  // Track who is currently being chatted with
   let currentFriend = null;
+  let pollInterval  = null;   // message polling
+  let gameInterval  = null;   // game state polling
+  let currentGameId = null;
+  let emojiQueue    = [];
+  let gfExpanded    = true;   // floating window expanded by default
 
-  // =====================================
-  // SWITCH VIEWS
-  // =====================================
-  function openChat(friend) {
-    // Store current friend
-    currentFriend = friend;
+  // ── refs ─────────────────────────────────────────────────
+  const previewEl   = document.getElementById('emojiPreview');
+  const clearBtn    = document.getElementById('emojiClearBtn');
+  const sendBtn     = document.getElementById('emojiSendBtn');
+  const gameFloat   = document.getElementById('game-float');
+  const gfPanel     = document.getElementById('gfPanel');
+  const gfToggleBtn = document.getElementById('gfToggleBtn');
+  const gfBarBadge  = document.getElementById('gfBarBadge');
+  const gameBadge   = document.getElementById('gameBadge');
 
-    // Fill in friend data
-    document.getElementById('chatNickname').textContent = friend.nickname;
-    document.getElementById('chatAvatar').src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
-
-    // Hide header and footer
-    document.getElementById('header').style.display = 'none';
-    document.getElementById('footer').style.display = 'none';
-
-    // Swap views
-    document.getElementById('chat-list-view').style.display = 'none';
-    document.getElementById('chat-window-view').style.display = 'flex';
-  }
-
-  window.showChatList = function() {
-    // Clear current friend
-    currentFriend = null;
-
-    // Show header and footer again
-    document.getElementById('header').style.display = 'block';
-    document.getElementById('footer').style.display = 'block';
-
-    // Swap views
-    document.getElementById('chat-window-view').style.display = 'none';
-    document.getElementById('chat-list-view').style.display = 'block';
-  }
-
-  // =====================================
-  // BLOCK FROM CHAT
-  // =====================================
-  document.querySelector('.chat-block-btn').addEventListener('click', async () => {
-    if (!currentFriend) return;
-
-    try {
-      const r = await fetch('/api/auth/block', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({ id: currentFriend.id })
-      });
-
-      if (r.ok) {
-        // Go back to chat list and reload friends
-        showChatList();
-        loadFriends();
-      } else {
-        const err = await r.json().catch(() => ({}));
-        alert(err.message || 'Could not block user');
-      }
-    } catch (err) {
-      console.error('Block error:', err);
+  // =============================================
+  // EMOJI COMPOSE
+  // =============================================
+  function updatePreview() {
+    if (!emojiQueue.length) {
+      previewEl.textContent = 'Tap emojis below…';
+      previewEl.classList.remove('has-content');
+      sendBtn.disabled = true;
+    } else {
+      previewEl.textContent = emojiQueue.join('');
+      previewEl.classList.add('has-content');
+      sendBtn.disabled = false;
     }
+  }
+
+  document.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      emojiQueue.push(btn.dataset.emoji);
+      updatePreview();
+      btn.style.transform = 'scale(1.3)';
+      setTimeout(() => { btn.style.transform = ''; }, 150);
+    });
   });
 
-  // =====================================
-  // LOAD FRIENDS INTO CHAT LIST
-  // =====================================
+  clearBtn.addEventListener('click', () => { emojiQueue = []; updatePreview(); });
+
+  sendBtn.addEventListener('click', async () => {
+    if (!currentFriend || !emojiQueue.length) return;
+    const combined = emojiQueue.join('');
+    emojiQueue = []; updatePreview();
+    try {
+      const r = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ receiverId: currentFriend.id, emoji: combined })
+      });
+      if (r.ok) {
+        const c = document.getElementById('chatMessages');
+        addMessageBubble(combined, true, c);
+        c.scrollTop = c.scrollHeight;
+      }
+    } catch (e) { console.error(e); }
+  });
+
+  // =============================================
+  // READ ALOUD — reads every bubble with a label
+  // =============================================
+  document.getElementById('readAloudBtn').addEventListener('click', () => {
+    window.speechSynthesis.cancel();
+    const parts = [];
+    const nick = document.getElementById('chatNickname').textContent;
+    if (nick) parts.push(`Chat with ${nick}.`);
+
+    document.querySelectorAll('.message-wrap').forEach(wrap => {
+      const bubble = wrap.querySelector('.message-bubble');
+      if (!bubble) return;
+      const mine = wrap.classList.contains('mine');
+      parts.push((mine ? 'You sent: ' : `${nick} sent: `) + bubble.textContent);
+    });
+
+    if (!parts.length) parts.push('No messages yet.');
+    parts.forEach((text, i) => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.95;
+      setTimeout(() => window.speechSynthesis.speak(u), i * 50);
+    });
+  });
+
+  // =============================================
+  // BLOCK
+  // =============================================
+  document.getElementById('blockBtn').addEventListener('click', async () => {
+    if (!currentFriend) return;
+    await fetch('/api/auth/block', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ id: currentFriend.id })
+    });
+    showChatList();
+    loadFriends();
+  });
+
+  // =============================================
+  // VIEW SWITCHING
+  // =============================================
+  function openChat(friend) {
+    currentFriend = friend;
+    document.getElementById('chatNickname').textContent = friend.nickname;
+    document.getElementById('chatAvatar').src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
+    document.getElementById('header').style.display = 'none';
+    document.getElementById('chat-list-view').style.display = 'none';
+    document.getElementById('chat-window-view').style.display = 'flex';
+
+    loadMessages();
+    clearInterval(pollInterval);
+    pollInterval = setInterval(loadMessages, 3000);
+
+    // Poll for incoming game invites every 4 s
+    clearInterval(gameInterval);
+    gameInterval = setInterval(checkIncomingInvite, 4000);
+  }
+
+  window.showChatList = function () {
+    currentFriend = null;
+    emojiQueue = []; updatePreview();
+    window.speechSynthesis.cancel();
+    clearInterval(pollInterval); pollInterval = null;
+    clearInterval(gameInterval); gameInterval = null;
+
+    document.getElementById('header').style.display = 'block';
+    document.getElementById('chat-window-view').style.display = 'none';
+    document.getElementById('chat-list-view').style.display = 'block';
+    // Game float stays if a game is in progress
+  };
+
+  // =============================================
+  // MESSAGES
+  // =============================================
+  function getMyId() {
+    try { return JSON.parse(atob(token.split('.')[1])).id; } catch { return null; }
+  }
+
+  async function loadMessages() {
+    if (!currentFriend) return;
+    try {
+      const res = await fetch(`/api/chat/messages/${currentFriend.id}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      renderMessages(data.messages || []);
+    } catch (e) { console.error(e); }
+  }
+
+  function renderMessages(messages) {
+    const c = document.getElementById('chatMessages');
+    const myId = getMyId();
+    const atBottom = c.scrollHeight - c.scrollTop <= c.clientHeight + 60;
+    const hint = c.querySelector('.chat-hint');
+    c.innerHTML = ''; if (hint) c.appendChild(hint);
+    messages.forEach(m => addMessageBubble(m.emoji, m.senderId === myId, c));
+    if (atBottom) c.scrollTop = c.scrollHeight;
+  }
+
+  function addMessageBubble(emoji, isMine, container) {
+    const wrap = document.createElement('div');
+    wrap.className = 'message-wrap ' + (isMine ? 'mine' : 'theirs');
+    if (!isMine && currentFriend) {
+      const av = document.createElement('img');
+      av.src = `/assets/avatars/avatar-${currentFriend.avatar ?? 0}.png`;
+      av.className = 'msg-avatar';
+      wrap.appendChild(av);
+    }
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble ' + (isMine ? 'bubble-mine' : 'bubble-theirs');
+    bubble.textContent = emoji;
+    wrap.appendChild(bubble);
+    container.appendChild(wrap);
+  }
+
+  // =============================================
+  // FRIENDS LIST
+  // =============================================
   async function loadFriends() {
     try {
       const res = await fetch('/api/auth/friends', {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       if (!res.ok) return;
-      const data = await res.json();
-      renderFriends(data.friends || []);
-    } catch (err) {
-      console.error('Friends fetch error', err);
-    }
+      renderFriends((await res.json()).friends || []);
+    } catch (e) { console.error(e); }
   }
 
   function renderFriends(friends) {
-    const friendsEl = document.getElementById('chat-list');
-    if (!friendsEl) return;
-
-    friendsEl.innerHTML = '';
-
+    const el = document.getElementById('chat-list');
+    if (!el) return;
+    el.innerHTML = '';
     if (!friends.length) {
-      const empty = document.createElement('p');
-      empty.textContent = 'No friends yet!';
-      empty.style.textAlign = 'center';
-      empty.style.color = '#888';
-      empty.style.marginBottom = '15px';
-
-      const addBtn = document.createElement('button');
-      addBtn.textContent = '👥 Add Friends';
-      addBtn.style.display = 'block';
-      addBtn.style.margin = '0 auto';
-      addBtn.style.background = 'linear-gradient(90deg, #ff8a3d, #ff6a2d)';
-      addBtn.style.color = 'white';
-      addBtn.style.border = 'none';
-      addBtn.style.padding = '12px 25px';
-      addBtn.style.borderRadius = '25px';
-      addBtn.style.fontWeight = 'bold';
-      addBtn.style.cursor = 'pointer';
-      addBtn.style.fontSize = '16px';
-
-      addBtn.addEventListener('click', () => {
-        window.location.href = '/pages/friends.html';
-      });
-
-      friendsEl.appendChild(empty);
-      friendsEl.appendChild(addBtn);
+      el.innerHTML = `
+        <p style="text-align:center;color:#888;margin-top:30px">No friends yet!</p>
+        <div style="text-align:center;margin-top:12px">
+          <button onclick="window.location.href='/pages/friends.html'"
+            style="background:linear-gradient(90deg,#ff8a3d,#ff6a2d);color:white;border:none;
+                   padding:12px 25px;border-radius:25px;font-weight:bold;cursor:pointer;font-size:16px">
+            👥 Add Friends
+          </button>
+        </div>`;
       return;
     }
-
     friends.forEach(friend => {
       const card = document.createElement('div');
       card.className = 'chat-card';
-
-      const info = document.createElement('div');
-      info.className = 'suggest-info';
-
-      const avatarDiv = document.createElement('div');
-      avatarDiv.className = 'friend-avatar';
-
-      const avatarImg = document.createElement('img');
-      avatarImg.src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
-      avatarImg.alt = friend.nickname;
-      avatarDiv.appendChild(avatarImg);
-
+      const av = document.createElement('div');
+      av.className = 'chat-card-avatar';
+      const img = document.createElement('img');
+      img.src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
+      img.alt = friend.nickname;
+      av.appendChild(img);
       const name = document.createElement('div');
-      name.className = 'friend-name';
+      name.className = 'chat-card-name';
       name.textContent = friend.nickname;
-
-      info.appendChild(avatarDiv);
-      info.appendChild(name);
-
-      const chatBtn = document.createElement('button');
-      chatBtn.className = 'chat-btn';
-      chatBtn.textContent = '💬 Message';
-
-      chatBtn.addEventListener('click', () => openChat(friend));
-
-      card.appendChild(info);
-      card.appendChild(chatBtn);
-      friendsEl.appendChild(card);
+      const btn = document.createElement('button');
+      btn.className = 'chat-btn';
+      btn.textContent = '💬 Message';
+      btn.addEventListener('click', () => openChat(friend));
+      card.appendChild(av); card.appendChild(name); card.appendChild(btn);
+      el.appendChild(card);
     });
   }
 
+  // =============================================
+  // FLOATING GAME WINDOW HELPERS
+  // =============================================
+
+  // Show the float window and set a specific state panel
+  function showGameFloat(stateId) {
+    ['invite','waiting','board','result'].forEach(s => {
+      document.getElementById('gf-state-' + s).style.display = 'none';
+    });
+    document.getElementById('gf-state-' + stateId).style.display = 'block';
+    gameFloat.style.display = 'block';
+
+    // Auto-expand when a new state arrives
+    setFloatExpanded(true);
+  }
+
+  function setFloatExpanded(expanded) {
+    gfExpanded = expanded;
+    gfPanel.style.display = expanded ? 'block' : 'none';
+    gfToggleBtn.textContent = expanded ? '▼' : '▲';
+  }
+
+  // Badge = red dot on game button AND on float bar
+  function setGameBadge(show) {
+    gameBadge.style.display = show ? 'flex' : 'none';
+    gfBarBadge.style.display = show ? 'flex' : 'none';
+  }
+
+  // Toggle expand/collapse
+  gfToggleBtn.addEventListener('click', () => {
+    setFloatExpanded(!gfExpanded);
+    setGameBadge(false); // clear badge when user opens it
+  });
+
+  // Close float entirely
+  document.getElementById('gfCloseBtn').addEventListener('click', () => {
+    gameFloat.style.display = 'none';
+    currentGameId = null;
+    setGameBadge(false);
+  });
+
+  // =============================================
+  // GAME — SEND INVITE (🎮 button)
+  // =============================================
+  document.getElementById('gameBtn').addEventListener('click', async () => {
+    if (!currentFriend) return;
+    try {
+      const r = await fetch('/api/chat/game/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ opponentId: currentFriend.id })
+      });
+      if (!r.ok) { alert((await r.json()).message); return; }
+      const data = await r.json();
+      currentGameId = data.game._id;
+
+      document.getElementById('gfBarTitle').textContent = 'Tic-Tac-Toe';
+      document.getElementById('gfWaitingText').textContent =
+        `Waiting for ${currentFriend.nickname} to accept…`;
+      showGameFloat('waiting');
+      pollForAccept();
+    } catch (e) { console.error(e); }
+  });
+
+  // Poll after sending invite.
+  // Checks the invite doc directly so we can tell the difference between
+  // "still waiting" (status=invited) and "declined" (status=declined).
+  // Gives the opponent up to 2 minutes to respond before timing out.
+  function pollForAccept() {
+    const id = currentGameId;
+    const TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
+    const started = Date.now();
+
+    const iv = setInterval(async () => {
+      // Stop if the game id changed (user cancelled or new game started)
+      if (!id || currentGameId !== id) { clearInterval(iv); return; }
+
+      // Time out after 2 minutes
+      if (Date.now() - started > TIMEOUT_MS) {
+        clearInterval(iv);
+        document.getElementById('gfResultEmoji').textContent = '⏰';
+        document.getElementById('gfResultTitle').textContent = 'Invite Expired';
+        currentGameId = null;
+        setGameBadge(true);
+        showGameFloat('result');
+        return;
+      }
+
+      try {
+        // Check the invite status directly
+        const res = await fetch(`/api/chat/game/invite-status/${id}`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) return; // network blip — keep waiting
+        const data = await res.json();
+        const game = data.game;
+
+        if (!game) return; // doc missing — keep waiting, may be a race
+
+        if (game.status === 'active') {
+          clearInterval(iv);
+          currentGameId = game._id;
+          renderBoard(game);
+          document.getElementById('gfBarTitle').textContent = 'Tic-Tac-Toe ▶';
+          showGameFloat('board');
+          startBoardPolling();
+          return;
+        }
+
+        if (game.status === 'declined') {
+          clearInterval(iv);
+          document.getElementById('gfResultEmoji').textContent = '😔';
+          document.getElementById('gfResultTitle').textContent = 'Invite Declined';
+          currentGameId = null;
+          setGameBadge(true);
+          showGameFloat('result');
+        }
+        // status === 'invited' → still waiting, do nothing and keep polling
+      } catch (e) { console.error(e); }
+    }, 4000); // check every 4 seconds
+  }
+
+  // =============================================
+  // GAME — CHECK FOR INCOMING INVITE (background poll)
+  // =============================================
+  async function checkIncomingInvite() {
+    if (!currentFriend || currentGameId) return;
+    try {
+      const res = await fetch(`/api/chat/game/pending/${currentFriend.id}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.game) {
+        currentGameId = data.game._id;
+        document.getElementById('gfInviterText').textContent =
+          `${currentFriend.nickname} wants to play Tic-Tac-Toe! 🎮`;
+        document.getElementById('gfBarTitle').textContent = 'Game Invite!';
+        setGameBadge(true);  // red dot appears
+        showGameFloat('invite');
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  // Accept
+  document.getElementById('gfAcceptBtn').addEventListener('click', async () => {
+    if (!currentGameId) return;
+    try {
+      const r = await fetch('/api/chat/game/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ gameId: currentGameId, accept: true })
+      });
+      const data = await r.json();
+      setGameBadge(false);
+      renderBoard(data.game);
+      document.getElementById('gfBarTitle').textContent = 'Tic-Tac-Toe ▶';
+      showGameFloat('board');
+      startBoardPolling();
+    } catch (e) { console.error(e); }
+  });
+
+  // Decline
+  document.getElementById('gfDeclineBtn').addEventListener('click', async () => {
+    if (!currentGameId) return;
+    await fetch('/api/chat/game/respond', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ gameId: currentGameId, accept: false })
+    }).catch(() => {});
+    currentGameId = null;
+    setGameBadge(false);
+    gameFloat.style.display = 'none';
+  });
+
+  // =============================================
+  // GAME — BOARD
+  // =============================================
+  function renderBoard(game) {
+    const myId = getMyId();
+    const boardEl = document.getElementById('gameBoard');
+    const turnEl  = document.getElementById('gfTurnLabel');
+    const isMyTurn = game.currentTurn === myId;
+
+    turnEl.textContent = isMyTurn ? '🟢 Your turn!' : `⏳ ${currentFriend ? currentFriend.nickname + "'s" : "Their"} turn…`;
+    turnEl.style.color = isMyTurn ? '#34c759' : '#ff8a3d';
+
+    boardEl.innerHTML = '';
+    game.board.forEach((cell, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'board-cell';
+      btn.textContent = cell === 'X' ? '✕' : cell === 'O' ? '○' : '';
+      if (cell) { btn.classList.add('taken', cell === 'X' ? 'cell-x' : 'cell-o'); }
+      if (!cell && isMyTurn && game.status === 'active') {
+        btn.addEventListener('click', () => makeMove(i));
+      } else {
+        btn.disabled = true;
+      }
+      boardEl.appendChild(btn);
+    });
+  }
+
+  // Poll for opponent's move (every 2 s)
+  function startBoardPolling() {
+    const id = currentGameId;
+    const iv = setInterval(async () => {
+      if (!id || currentGameId !== id) { clearInterval(iv); return; }
+      try {
+        const res = await fetch(`/api/chat/game/active/${currentFriend.id}`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.game) { clearInterval(iv); return; }
+        if (data.game.status === 'finished') {
+          clearInterval(iv);
+          showResult(data.game);
+          return;
+        }
+        renderBoard(data.game);
+        // If it's now my turn, stop polling and wait for my click
+        if (data.game.currentTurn === getMyId()) {
+          // Show badge if float is collapsed so user knows it's their turn
+          if (!gfExpanded) setGameBadge(true);
+          clearInterval(iv);
+        }
+      } catch (e) { console.error(e); }
+    }, 2000);
+  }
+
+  async function makeMove(cellIndex) {
+    if (!currentGameId) return;
+    try {
+      const r = await fetch('/api/chat/game/move', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ gameId: currentGameId, cellIndex })
+      });
+      const data = await r.json();
+      if (!r.ok) { alert(data.message); return; }
+      if (data.game.status === 'finished') {
+        showResult(data.game);
+      } else {
+        renderBoard(data.game);
+        startBoardPolling(); // wait for opponent
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  // =============================================
+  // GAME — RESULT
+  // =============================================
+  function showResult(game) {
+    const myId = getMyId();
+    let emoji, title;
+    if (game.winner === 'draw')      { emoji = '🤝'; title = "It's a Draw!"; }
+    else if (game.winner === myId)   { emoji = '🏆'; title = 'You Win! 🎉'; }
+    else                             { emoji = '😅'; title = 'You Lose!'; }
+
+    document.getElementById('gfResultEmoji').textContent = emoji;
+    document.getElementById('gfResultTitle').textContent = title;
+    currentGameId = null;
+    setGameBadge(true); // notify user game ended
+    showGameFloat('result');
+  }
+
+  document.getElementById('gfPlayAgainBtn').addEventListener('click', () => {
+    setGameBadge(false);
+    gameFloat.style.display = 'none';
+    // Re-trigger invite
+    document.getElementById('gameBtn').click();
+  });
+
+  document.getElementById('gfDismissBtn').addEventListener('click', () => {
+    setGameBadge(false);
+    gameFloat.style.display = 'none';
+    currentGameId = null;
+  });
+
+  // =============================================
+  // INIT
+  // =============================================
   loadFriends();
 });

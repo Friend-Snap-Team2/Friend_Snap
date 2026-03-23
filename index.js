@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const app = express();
 const authRoutes = require('./routes/auth');
+const chatRoutes = require('./routes/chat'); // NEW: import chat routes
 
 // Middleware
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.static('public'));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/chat', chatRoutes); // NEW: register chat routes
 
 // Connect to MongoDB then start server
 mongoose.connect(process.env.MONGO_URI)

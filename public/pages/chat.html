@@ -7,69 +7,131 @@
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/pages/chat.css">
 </head>
-
 <body>
 
   <div id="header"></div>
 
   <main class="container">
 
-    <!-- View 1 - Friends list -->
+    <!-- VIEW 1: Friends list -->
     <div id="chat-list-view">
       <h2 class="chat-title">Messages</h2>
       <div id="chat-list"></div>
     </div>
 
-    <!-- View 2 - Chat window (hidden by default) -->
+    <!-- VIEW 2: Chat window -->
     <div id="chat-window-view" style="display:none">
 
       <div class="chat-header">
         <button class="chat-back-btn" onclick="showChatList()">←</button>
         <div class="chat-user-info">
-          <div class="chat-avatar">
+          <div class="chat-avatar-wrap">
             <img id="chatAvatar" src="" alt="avatar">
+            <span class="online-dot"></span>
           </div>
           <div>
             <div id="chatNickname" class="chat-nickname"></div>
-            <div class="chat-online">Online</div>
+            <div class="chat-online-label">Online</div>
           </div>
         </div>
-
-        <!-- centred logo -->
-        <div class="chat-header-logo">
-          <img src="/assets/icon_placeholder.png" alt="Friend Snap">
-        </div>
-
         <div class="chat-header-actions">
-          <button class="chat-read-btn">🔊 Read Aloud</button>
-          <button class="chat-block-btn">🚫 Block</button>
+          <button class="chat-read-btn" id="readAloudBtn">🔊 Read Aloud</button>
+          <button class="chat-block-btn" id="blockBtn">🚫 Block</button>
         </div>
       </div>
 
       <div class="chat-messages" id="chatMessages">
-        <div class="chat-hint">
-          <span>ℹ️ Say hello with a big smile! 😊</span>
+        <div class="chat-hint"><span>ℹ️ Say hello with a big smile! 😊</span></div>
+      </div>
+
+      <div class="emoji-section">
+        <div class="emoji-compose">
+          <div class="emoji-preview">
+            <span class="emoji-preview-text" id="emojiPreview">Tap emojis below…</span>
+          </div>
+          <button class="emoji-clear-btn" id="emojiClearBtn">✕</button>
+          <button class="emoji-send-btn" id="emojiSendBtn" disabled>Send ➤</button>
+        </div>
+
+        <div class="emoji-bar-row">
+          <!-- Game button with red dot badge -->
+          <div class="game-btn-wrap">
+            <button class="game-btn" id="gameBtn" title="Play Tic-Tac-Toe">🎮</button>
+            <span class="game-badge" id="gameBadge" style="display:none"></span>
+          </div>
+          <span class="emoji-label">QUICK REPLY</span>
+          <div class="emoji-bar">
+            <button class="emoji-btn" data-emoji="👍">👍</button>
+            <button class="emoji-btn" data-emoji="👎">👎</button>
+            <button class="emoji-btn" data-emoji="❤️">❤️</button>
+            <button class="emoji-btn" data-emoji="😂">😂</button>
+            <button class="emoji-btn" data-emoji="😮">😮</button>
+            <button class="emoji-btn" data-emoji="🍔">🍔</button>
+            <button class="emoji-btn" data-emoji="🐶">🐶</button>
+          </div>
         </div>
       </div>
 
-      <div class="emoji-bar">
-        <div class="emoji-btn">👍</div>
-        <div class="emoji-btn">👎</div>
-        <div class="emoji-btn">❤️</div>
-        <div class="emoji-btn">😂</div>
-        <div class="emoji-btn">😮</div>
-        <div class="emoji-btn">🍔</div>
-        <div class="emoji-btn">🐶</div>
+    </div>
+  </main>
+
+  <!-- =============================================
+       FLOATING GAME WINDOW
+       Stays on screen while chat continues.
+       Collapsed = just the header bar.
+       Expanded  = header + game content.
+       ============================================= -->
+  <div id="game-float" style="display:none">
+
+    <!-- Collapsed bar (always visible when game is active) -->
+    <div class="gf-bar" id="gfBar">
+      <span class="gf-bar-icon">🎮</span>
+      <span class="gf-bar-title" id="gfBarTitle">Tic-Tac-Toe</span>
+      <span class="gf-bar-badge" id="gfBarBadge" style="display:none">!</span>
+      <button class="gf-toggle-btn" id="gfToggleBtn">▲</button>
+      <button class="gf-close-btn"  id="gfCloseBtn">✕</button>
+    </div>
+
+    <!-- Expandable game panel -->
+    <div class="gf-panel" id="gfPanel">
+
+      <!-- State: invite received -->
+      <div id="gf-state-invite" style="display:none">
+        <p class="gf-sub" id="gfInviterText"></p>
+        <div class="gf-row">
+          <button class="gf-accept-btn" id="gfAcceptBtn">✅ Accept</button>
+          <button class="gf-decline-btn" id="gfDeclineBtn">❌ Decline</button>
+        </div>
+      </div>
+
+      <!-- State: waiting for opponent -->
+      <div id="gf-state-waiting" style="display:none">
+        <p class="gf-sub" id="gfWaitingText"></p>
+        <div class="gf-spinner">⏳</div>
+      </div>
+
+      <!-- State: active board -->
+      <div id="gf-state-board" style="display:none">
+        <div class="gf-turn" id="gfTurnLabel"></div>
+        <div class="game-board" id="gameBoard"></div>
+      </div>
+
+      <!-- State: result -->
+      <div id="gf-state-result" style="display:none">
+        <div class="gf-result-emoji" id="gfResultEmoji"></div>
+        <div class="gf-result-title" id="gfResultTitle"></div>
+        <div class="gf-row" style="margin-top:10px">
+          <button class="gf-accept-btn" id="gfPlayAgainBtn">🔄 Again</button>
+          <button class="gf-decline-btn" id="gfDismissBtn">Close</button>
+        </div>
       </div>
 
     </div>
-
-  </main>
+  </div>
 
   <div id="footer"></div>
 
   <script src="/js/global.js"></script>
   <script src="/js/pages/chat.js"></script>
-
 </body>
 </html>

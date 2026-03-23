@@ -1,218 +1,248 @@
-.chat-title {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-/* chat list cards */
+/* =====================================
+   CHAT LIST VIEW
+   ===================================== */
+.chat-title { font-size:22px; font-weight:700; margin-bottom:16px; color:#1a1a1a; }
 
 .chat-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px 30px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  width: 60%;
-  margin: 20px auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display:flex; align-items:center; gap:12px;
+  background:#fff; border-radius:16px; padding:14px 16px;
+  margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.07);
 }
-
+.chat-card-avatar img { width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.chat-card-name { flex:1; font-size:16px; font-weight:600; color:#1a1a1a; }
 .chat-btn {
-  background: linear-gradient(90deg, #ff8a3d, #ff6a2d);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  white-space: nowrap;
+  background:linear-gradient(90deg,#ff8a3d,#ff6a2d); color:white; border:none;
+  border-radius:20px; padding:8px 16px; font-size:14px; font-weight:600; cursor:pointer;
 }
-
-/* avatar styles */
-
-.friend-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #f0f0f0;
-  flex-shrink: 0;
-}
-
-.friend-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.friend-name {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.suggest-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.chat-btn:hover { opacity:0.9; }
 
 /* =====================================
    CHAT WINDOW
-===================================== */
-
+   ===================================== */
 #chat-window-view {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  z-index: 1000;
+  display:flex; flex-direction:column;
+  position:fixed; top:0; left:0; right:0; bottom:64px;
+  background:#fdf6ee; z-index:50;
 }
-
-/* chat header bar */
 
 .chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 15px 20px;
-  background: white;
-  border-bottom: 1px solid #ddd;
-  border-radius: 15px 15px 0 0;
-  position: relative;
+  display:flex; align-items:center; gap:10px;
+  padding:14px 20px; background:#fff;
+  border-bottom:1px solid #f0e8dc; box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
-
-.chat-header-logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+.chat-back-btn { background:none; border:none; font-size:22px; cursor:pointer; color:#ff6a2d; }
+.chat-user-info { display:flex; align-items:center; gap:10px; flex:1; }
+.chat-avatar-wrap { position:relative; width:40px; height:40px; }
+.chat-avatar-wrap img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
+.online-dot {
+  position:absolute; bottom:1px; right:1px;
+  width:10px; height:10px; background:#34c759; border-radius:50%; border:2px solid #fff;
 }
-
-.chat-header-logo img {
-  width: 65px;
-  height: 65px;
-  object-fit: contain;
-}
-
-/* ✅ merged two definitions into one */
-.chat-header-actions {
-  display: flex;
-  gap: 10px;
-  margin-left: auto;
-}
-
-.chat-back-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #333;
-  padding: 5px 10px;
-}
-
-.chat-user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.chat-avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #f0f0f0;
-}
-
-.chat-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.chat-nickname {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.chat-online {
-  font-size: 12px;
-  color: #34c759;
-}
-
+.chat-nickname    { font-size:15px; font-weight:700; color:#1a1a1a; }
+.chat-online-label{ font-size:12px; color:#34c759; font-weight:500; }
+.chat-header-actions { display:flex; gap:8px; }
 .chat-read-btn {
-  background: #4f8df5;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
+  background:#4a9eff; color:white; border:none; border-radius:20px;
+  padding:7px 13px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;
 }
-
 .chat-block-btn {
-  background: #ff3b30;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
+  background:#ff3b30; color:white; border:none; border-radius:20px;
+  padding:7px 13px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;
 }
 
-/* message area */
-
+/* ── Messages ── */
 .chat-messages {
-  flex: 1;
-  background: #fdf6ec;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  flex:1; overflow-y:auto; padding:20px;
+  display:flex; flex-direction:column; gap:10px; background:#fdf6ee;
 }
-
-.chat-hint {
-  background: #e8f0fe;
-  color: #4f8df5;
-  padding: 12px 20px;
-  border-radius: 25px;
-  font-size: 14px;
-  margin-top: 20px;
+.chat-hint { display:flex; justify-content:center; margin-bottom:8px; }
+.chat-hint span {
+  background:rgba(100,120,255,0.12); color:#444;
+  border-radius:20px; padding:8px 16px; font-size:13px;
 }
-
-/* emoji bar */
-
-.emoji-bar {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 15px;
-  background: white;
-  border-top: 1px solid #ddd;
-  flex-wrap: wrap;
+.message-wrap { display:flex; align-items:flex-end; gap:8px; }
+.message-wrap.mine   { justify-content:flex-end; }
+.message-wrap.theirs { justify-content:flex-start; }
+.msg-avatar { width:30px; height:30px; border-radius:50%; object-fit:cover; }
+.message-bubble {
+  font-size:38px; border-radius:20px; padding:10px 14px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08); line-height:1.15;
+  max-width:70%; word-break:break-all;
 }
+.bubble-mine   { background:#ff8a3d; }
+.bubble-theirs { background:#fff; }
 
+/* ── Compose ── */
+.emoji-section { background:#fff; border-top:1px solid #f0e8dc; padding:10px 20px 14px; }
+.emoji-compose { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.emoji-preview {
+  flex:1; min-height:46px; background:#fff8f2; border:1.5px solid #ffe0c8;
+  border-radius:12px; padding:4px 12px; display:flex; align-items:center;
+}
+.emoji-preview-text { flex:1; color:#ccc; font-size:14px; }
+.emoji-preview-text.has-content { color:#1a1a1a; font-size:28px; letter-spacing:2px; }
+.emoji-clear-btn {
+  background:#f0f0f0; border:none; border-radius:50%;
+  width:30px; height:30px; font-size:14px; cursor:pointer; color:#888;
+}
+.emoji-clear-btn:hover { background:#e0e0e0; }
+.emoji-send-btn {
+  background:linear-gradient(90deg,#ff8a3d,#ff6a2d); color:white; border:none;
+  border-radius:20px; padding:8px 20px; font-size:14px; font-weight:700;
+  cursor:pointer; white-space:nowrap;
+}
+.emoji-send-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.emoji-send-btn:not(:disabled):hover { opacity:0.9; }
+
+/* ── Emoji bar row ── */
+.emoji-bar-row { display:flex; align-items:center; gap:8px; }
+
+/* Game button wrapper — for badge positioning */
+.game-btn-wrap { position:relative; flex-shrink:0; }
+
+.game-btn {
+  width:58px; height:58px; border-radius:16px; border:none;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  font-size:26px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 10px rgba(102,126,234,0.4);
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.game-btn:hover  { transform:scale(1.08); }
+.game-btn:active { transform:scale(0.95); }
+
+/* Red dot badge on 🎮 button */
+.game-badge {
+  position:absolute; top:-4px; right:-4px;
+  width:14px; height:14px;
+  background:#ff3b30; border-radius:50%; border:2px solid #fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; color:white; font-weight:800;
+  animation:badgePop 0.3s ease;
+}
+@keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
+
+.emoji-label {
+  font-size:10px; color:#bbb; font-weight:700; letter-spacing:1px;
+  white-space:nowrap; writing-mode:vertical-rl; transform:rotate(180deg); margin:0 2px;
+}
+.emoji-bar { display:flex; gap:8px; flex:1; justify-content:space-between; overflow-x:auto; }
+.emoji-bar::-webkit-scrollbar { display:none; }
 .emoji-btn {
-  width: 60px;
-  height: 60px;
-  background: #fff8f0;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  transition: transform 0.1s;
+  background:#fff8f2; border:1.5px solid #ffe0c8; border-radius:16px;
+  font-size:34px; cursor:pointer; flex:1; height:58px; min-width:0;
+  display:flex; align-items:center; justify-content:center; padding:0;
+  transition:transform 0.1s, background 0.1s;
+}
+.emoji-btn:hover  { background:#ffe8d5; transform:scale(1.15); }
+.emoji-btn:active { transform:scale(0.95); }
+
+/* =============================================
+   FLOATING GAME WINDOW
+   Sits above the footer, bottom-right corner.
+   ============================================= */
+#game-float {
+  position:fixed;
+  bottom:74px;   /* just above footer nav */
+  right:12px;
+  width:300px;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18);
+  z-index:150;
+  overflow:hidden;
+  animation:floatIn 0.3s ease;
+}
+@keyframes floatIn {
+  from { transform:translateY(20px); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
 }
 
-.emoji-btn:hover {
-  transform: scale(1.1);
+/* ── Collapsed bar (always visible) ── */
+.gf-bar {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 14px;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  cursor:pointer;
+}
+.gf-bar-icon { font-size:20px; }
+.gf-bar-title { flex:1; font-size:14px; font-weight:700; color:#fff; }
+
+/* Red badge on the float bar */
+.gf-bar-badge {
+  width:18px; height:18px; background:#ff3b30;
+  border-radius:50%; border:2px solid #fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:white; font-weight:800;
+  animation:badgePop 0.3s ease;
+}
+
+.gf-toggle-btn, .gf-close-btn {
+  background:rgba(255,255,255,0.2); border:none; color:#fff;
+  border-radius:8px; width:26px; height:26px;
+  font-size:12px; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+}
+.gf-toggle-btn:hover, .gf-close-btn:hover { background:rgba(255,255,255,0.35); }
+
+/* ── Expandable panel ── */
+.gf-panel { padding:16px 16px 14px; }
+
+.gf-sub { font-size:14px; color:#555; text-align:center; margin-bottom:12px; }
+
+.gf-spinner {
+  font-size:32px; text-align:center; display:block;
+  margin:8px auto;
+  animation:spin 1.5s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.gf-row { display:flex; gap:10px; justify-content:center; }
+
+.gf-accept-btn {
+  background:linear-gradient(90deg,#34c759,#28a745); color:white; border:none;
+  border-radius:20px; padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer; flex:1;
+}
+.gf-accept-btn:hover { opacity:0.9; }
+
+.gf-decline-btn {
+  background:#ff3b30; color:white; border:none;
+  border-radius:20px; padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer; flex:1;
+}
+.gf-decline-btn:hover { opacity:0.9; }
+
+.gf-turn {
+  font-size:14px; font-weight:700; text-align:center;
+  margin-bottom:10px;
+}
+
+/* ── Board ── */
+.game-board {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:6px; margin:0 auto 10px; max-width:240px;
+}
+.board-cell {
+  aspect-ratio:1; border-radius:12px;
+  border:2px solid #e8e8e8; background:#f9f9f9;
+  font-size:28px; font-weight:800; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background 0.15s, transform 0.1s;
+}
+.board-cell:not(.taken):not(:disabled):hover { background:#fff0e0; transform:scale(1.05); }
+.board-cell.taken { cursor:default; }
+.board-cell.cell-x { color:#ff6a2d; background:#fff3ee; }
+.board-cell.cell-o { color:#764ba2; background:#f3eeff; }
+
+/* ── Result ── */
+.gf-result-emoji {
+  font-size:48px; text-align:center; display:block;
+  margin-bottom:4px; animation:bounce 0.5s ease;
+}
+.gf-result-title {
+  font-size:18px; font-weight:800; text-align:center;
+  color:#1a1a1a; margin-bottom:12px;
+}
+@keyframes bounce {
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-10px); }
 }
