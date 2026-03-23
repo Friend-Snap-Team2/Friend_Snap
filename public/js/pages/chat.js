@@ -105,6 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // =============================================
   function openChat(friend) {
     currentFriend = friend;
+    // Persist so a page refresh restores the chat without losing state
+    localStorage.setItem('currentFriend', JSON.stringify(friend));
+
     document.getElementById('chatNickname').textContent = friend.nickname;
     document.getElementById('chatAvatar').src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
     document.getElementById('header').style.display = 'none';
@@ -113,15 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadMessages();
     clearInterval(pollInterval);
-    pollInterval = setInterval(loadMessages, 3000);
+    pollInterval = setInterval(loadMessages, 1000); // 1s for near-instant messages
 
-    // Poll for incoming game invites every 4 s
     clearInterval(gameInterval);
-    gameInterval = setInterval(checkIncomingInvite, 4000);
+    gameInterval = setInterval(checkIncomingInvite, 2000); // 2s invite check
   }
 
   window.showChatList = function () {
     currentFriend = null;
+    localStorage.removeItem('currentFriend'); // clear saved chat
     emojiQueue = []; updatePreview();
     window.speechSynthesis.cancel();
     clearInterval(pollInterval); pollInterval = null;
@@ -347,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // status === 'invited' → still waiting, do nothing and keep polling
       } catch (e) { console.error(e); }
-    }, 4000); // check every 4 seconds
+    }, 1000); // check every 1s
   }
 
   // =============================================
@@ -429,31 +432,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Poll for opponent's move (every 2 s)
+  // Keep a single persistent board polling interval stored here
+  // so we never accidentally start two at once.
+  let boardPollIv = null;
+
+  // Start (or restart) polling the game board every 1s.
+  // Runs continuously until the game ends or the game id changes —
+  // no more stopping when it's "my turn", because the opponent needs
+  // to see my move reflected immediately too.
   function startBoardPolling() {
+    // Clear any existing board poll first
+    if (boardPollIv) { clearInterval(boardPollIv); boardPollIv = null; }
+
     const id = currentGameId;
-    const iv = setInterval(async () => {
-      if (!id || currentGameId !== id) { clearInterval(iv); return; }
+    boardPollIv = setInterval(async () => {
+      if (!id || currentGameId !== id) {
+        clearInterval(boardPollIv); boardPollIv = null; return;
+      }
       try {
         const res = await fetch(`/api/chat/game/active/${currentFriend.id}`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         const data = await res.json();
-        if (!data.game) { clearInterval(iv); return; }
+
+        // No game found at all — stop polling
+        if (!data.game) { clearInterval(boardPollIv); boardPollIv = null; return; }
+
+        // Game finished — show result to BOTH players regardless of who moved last
         if (data.game.status === 'finished') {
-          clearInterval(iv);
+          clearInterval(boardPollIv); boardPollIv = null;
           showResult(data.game);
           return;
         }
+
+        // Game still active — update the board
         renderBoard(data.game);
-        // If it's now my turn, stop polling and wait for my click
-        if (data.game.currentTurn === getMyId()) {
-          // Show badge if float is collapsed so user knows it's their turn
-          if (!gfExpanded) setGameBadge(true);
-          clearInterval(iv);
+
+        // Show badge if window is collapsed and it just became my turn
+        if (data.game.currentTurn === getMyId() && !gfExpanded) {
+          setGameBadge(true);
         }
       } catch (e) { console.error(e); }
-    }, 2000);
+    }, 1000); // poll every 1s — fast enough to feel real-time
   }
 
   async function makeMove(cellIndex) {
@@ -506,7 +526,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =============================================
-  // INIT
+  // INIT — restore state if page was refreshed mid-chat
   // =============================================
-  loadFriends();
+  const savedFriend = localStorage.getItem('currentFriend');
+  if (savedFriend) {
+    try {
+      // Re-open the chat immediately without waiting for friend list load
+      openChat(JSON.parse(savedFriend));
+    } catch (e) {
+      localStorage.removeItem('currentFriend');
+      loadFriends();
+    }
+  } else {
+    loadFriends();
+  }
 });

@@ -175,13 +175,15 @@ router.post('/game/respond', authenticateToken, async (req, res) => {
 router.get('/game/active/:friendId', authenticateToken, async (req, res) => {
   try {
     const myId = req.user.id;
+    // Return both 'active' AND 'finished' so the waiting player
+    // can detect the game ended without missing the final state.
     const game = await Game.findOne({
-      status: 'active',
+      status: { $in: ['active', 'finished'] },
       $or: [
         { playerX: myId, playerO: req.params.friendId },
         { playerX: req.params.friendId, playerO: myId }
       ]
-    });
+    }).sort({ updatedAt: -1 }); // get the most recent game
     res.json({ game: game || null });
   } catch (err) {
     res.status(500).json({ message: 'Could not load game' });

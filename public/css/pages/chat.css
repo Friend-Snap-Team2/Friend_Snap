@@ -143,15 +143,20 @@
    ============================================= */
 #game-float {
   position:fixed;
-  bottom:74px;   /* just above footer nav */
+  /* Anchor to top of message area, right side.
+     The chat header is ~68px tall, so top:68px puts this just below it.
+     This keeps the float completely clear of the emoji bar and footer. */
+  top:68px;
   right:12px;
-  width:300px;
+  width:280px;
   background:#fff;
   border-radius:20px;
   box-shadow:0 8px 32px rgba(0,0,0,0.18);
   z-index:150;
   overflow:hidden;
   animation:floatIn 0.3s ease;
+  /* Cap height so it never overlaps the emoji section */
+  max-height: calc(100vh - 68px - 200px);
 }
 @keyframes floatIn {
   from { transform:translateY(20px); opacity:0; }
