@@ -127,6 +127,18 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 20px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.avatar-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.avatar-grid::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
 }
 
 .avatar-option {
@@ -145,4 +157,78 @@ body {
 .avatar-option.selected {
   border-color: #ff7b3a;
   box-shadow: 0 0 0 2px #ff7b3a;
+}
+@media (max-width: 760px) {
+  .login-box {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 18px;
+    padding: 30px 20px;
+    margin: 0 10px;
+  }
+
+  .login-box h1 {
+    font-size: 28px;
+  }
+
+  .tagline {
+    font-size: 16px;
+  }
+
+  .tab {
+    font-size: 16px;
+    padding: 11px;
+  }
+
+  .input {
+    padding: 16px 18px;
+    font-size: 18px;
+  }
+
+  .submit-btn {
+    padding: 16px;
+    font-size: 17px;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  .login-box h1 {
+    font-size: 30px;
+  }
+
+  .tagline {
+    font-size: 17px;
+  }
+
+  .tab {
+    font-size: 17px;
+  }
+
+  .input {
+    font-size: 19px;
+    padding: 18px 20px;
+  }
+
+  .submit-btn {
+    font-size: 18px;
+    padding: 16px;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .login-container {
+    padding: 10px;
+  }
 }

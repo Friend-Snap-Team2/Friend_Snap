@@ -63,6 +63,10 @@
   font-weight: bold;
 }
 
+.photos-text {
+  gap: 4px;
+}
+
 .photos-sub {
   font-size: 16px;
 }
@@ -289,4 +293,27 @@
   .popup-box { width: 92%; max-width: 420px; }
   .popup-header { font-size: 16px; }
   .unblock-btn { font-size: 13px; padding: 8px 14px; }
+  .logout-btn { margin-bottom: 140px; }
+  .photos-card {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Extra safe area for logout on mobile */
+@media (max-width: 600px) {
+  .logout-btn {
+    margin-bottom: 160px;
+  }
+  .photos-card {
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+  .photos-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

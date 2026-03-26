@@ -52,3 +52,13 @@
   color: #ff8a3d;
   text-decoration: underline;
 }
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding-bottom: 400px;
+  }
+  .help-section:last-child {
+    padding-bottom: 150px;
+  }
+}
