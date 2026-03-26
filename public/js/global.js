@@ -1,3 +1,12 @@
+const savedTheme = localStorage.getItem("theme") || "light";
+document.body.classList.add(savedTheme);
+
+const savedSize = localStorage.getItem("textSize") || "normal";
+
+if(savedSize === "large"){
+  document.body.style.fontSize = "20px";
+}
+
 function checkAuth() {
   const token = localStorage.getItem('token');
   if (!token) {

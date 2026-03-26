@@ -369,3 +369,41 @@ main {
 
   .photo-grid { grid-template-columns: repeat(1, minmax(100%, 1fr)); }
 }
+
+/* LIGHT (default) */
+body.light {
+  background: #F6E8DA;
+  color: #000;
+}
+
+/* DARK MODE */
+body.dark {
+  background: #121212;
+  color: #ffffff;
+}
+
+body.dark .card,
+body.dark .setting-box {
+  background: #1e1e1e;
+}
+
+body.dark button {
+  background: #333;
+  color: white;
+}
+
+/* HIGH CONTRAST (BEST FOR ACCESSIBILITY) */
+body.high {
+  background: #000000;
+  color: #FFFF00;
+}
+
+body.high button {
+  background: #FFFF00;
+  color: #000000;
+}
+
+body.high .setting-box {
+  background: #000;
+  border: 2px solid yellow;
+}
