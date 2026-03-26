@@ -64,7 +64,23 @@ body {
   width: 90%;
   max-width: 2000px;
   margin: 30px auto;
-  padding-bottom: 90px;
+  padding-bottom: 220px;
+}
+
+main {
+  padding-bottom: 240px;
+}
+
+.page-content {
+  padding-bottom: 220px;
+}
+
+body {
+  padding-bottom: 100px;
+}
+
+.navbar {
+  z-index: 999;
 }
 
 .subtitle {
@@ -131,4 +147,143 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
+}
+
+/* Global mobile-first responsive overrides */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+.read-btn, .help, .chat-btn, .comment-btn, .logout-btn, .blocked-btn, .suggest-add-btn,
+.take-btn, .pick-btn, .friends-tabs .tab, .once, .gf-accept-btn, .gf-decline-btn {
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 22px auto;
+  padding: 0 14px 220px;
+  box-sizing: border-box;
+}
+
+main {
+  padding-bottom: 240px;
+}
+
+.page-content {
+  padding-bottom: 220px;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    padding: 12px;
+  }
+
+  .user .username, .hello {
+    font-size: 16px;
+  }
+
+  .read-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .navbar {
+    padding: 14px 0;
+  }
+
+  .nav {
+    font-size: 12px;
+  }
+
+  .nav span {
+    font-size: 18px;
+  }
+
+  .help {
+    padding: 10px 14px;
+    right: 8px;
+    bottom: 86px;
+  }
+
+  .avatar img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-logo img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .container {
+    margin: 16px auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .user {
+    gap: 8px;
+  }
+
+  .container {
+    margin: 10px auto;
+    padding: 0 10px;
+  }
+
+  .navbar {
+    padding: 12px 0;
+  }
+
+  .nav {
+    font-size: 12px;
+  }
+
+  .nav span { font-size: 18px; }
+
+  .read-btn, .help {
+    padding: 10px 14px;
+  }
+
+  .help {
+    right: 8px;
+    bottom: 84px;
+  }
+
+  .header-logo {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 8px;
+  }
+
+  .header-logo img {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container,
+  .page-content {
+    padding-bottom: 240px;
+  }
+
+  body { padding-bottom: 120px; }
 }

@@ -223,3 +223,49 @@
   border: 1px solid #ccc;
   font-size: 16px;
 }
+
+@media (max-width: 900px) {
+  .friend-card {
+    width: 100%;
+    padding: 24px;
+  }
+
+  .friends-header {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .friends-header h1 { font-size: 22px; }
+
+  .friends-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tab {
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+
+  .listen, .suggest-add-btn, .block-btn, .remove-btn {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .friend-card {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .friend-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  .friend-info { gap: 8px; }
+
+  .friend-name { font-size: 16px; }
+
+  .comment-btn { padding: 12px; font-size: 14px; }
+
+  .friend-photo { width: 100%; height: auto; max-width: 120px; }
+}

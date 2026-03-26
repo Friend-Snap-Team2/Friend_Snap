@@ -252,3 +252,42 @@
   0%,100%{ transform:translateY(0); }
   50%    { transform:translateY(-10px); }
 }
+
+@media (max-width: 900px) {
+  .chat-card { padding: 12px; }
+  .chat-card-avatar img { width: 42px; height: 42px; }
+  .chat-card-name { font-size: 15px; }
+  .chat-btn { padding: 8px 12px; font-size: 13px; }
+  .chat-header { padding: 12px 14px; }
+  .chat-avatar-wrap { width: 34px; height: 34px; }
+  .chat-avatar-wrap img { width: 34px; height: 34px; }
+  .chat-nickname { font-size: 14px; }
+  .chat-online-label { font-size: 11px; }
+  .chat-read-btn, .chat-block-btn { padding: 7px 10px; font-size: 12px; }
+  .emoji-preview { min-height: 40px; }
+  .emoji-preview-text { font-size: 12px; }
+  .emoji-send-btn { padding: 8px 16px; }
+  .game-btn { width: 50px; height: 50px; font-size: 22px; }
+  .game-badge { width: 12px; height: 12px; font-size: 8px; }
+}
+
+@media (max-width: 600px) {
+  .chat-title { font-size: 20px; }
+  .chat-card { gap: 8px; }
+  .chat-card-name { font-size: 14px; }
+  .chat-btn { padding: 7px 10px; font-size: 13px; }
+  .chat-window { bottom: 70px; }
+  .message-bubble { font-size: 16px; max-width: 80%; }
+  .chat-messages { padding: 12px; }
+  .emoji-section { padding: 8px 12px; }
+  .emoji-compose { gap: 6px; }
+  .emoji-btn { height: 50px; font-size: 28px; }
+
+  #game-float { width: 240px; right: 8px; top: 68px; }
+  .gf-bar { padding: 8px 10px; }
+  .gf-bar-icon { font-size: 18px; }
+  .gf-bar-title { font-size: 12px; }
+  .gf-accept-btn, .gf-decline-btn { padding: 8px 12px; font-size: 13px; }
+  .game-board { max-width: 200px; gap: 5px; }
+  .board-cell { font-size: 24px; }
+}

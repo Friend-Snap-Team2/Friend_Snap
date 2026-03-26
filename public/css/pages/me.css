@@ -231,3 +231,62 @@
   align-items: center;
   gap: 12px;
 }
+
+@media (max-width: 900px) {
+  .profile-page {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 14px;
+  }
+
+  .profile-card {
+    padding: 30px 16px;
+  }
+
+  .profile-avatar img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .photos-card {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .photos-icon { width: 50px; height: 50px; font-size: 24px; }
+
+  .photos-title { font-size: 22px; }
+  .photos-sub { font-size: 14px; }
+
+  .rules-card { padding: 16px; }
+  .rules-header { font-size: 18px; }
+  .rule { font-size: 15px; }
+}
+
+@media (max-width: 600px) {
+  .profile-card {
+    padding: 20px 12px;
+  }
+
+  .profile-avatar img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .member-since { font-size: 15px; }
+
+  .photos-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .photos-title { font-size: 20px; }
+  .photos-sub { font-size: 13px; }
+
+  .logout-btn, .blocked-btn { padding: 12px 14px; font-size: 14px; }
+
+  .popup-box { width: 92%; max-width: 420px; }
+  .popup-header { font-size: 16px; }
+  .unblock-btn { font-size: 13px; padding: 8px 14px; }
+}

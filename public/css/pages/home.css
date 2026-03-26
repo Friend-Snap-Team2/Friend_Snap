@@ -2,7 +2,7 @@
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1f  r));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
@@ -114,4 +114,46 @@
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .hello-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .photo-feed {
+    padding: 14px;
+  }
+
+  .photo-grid { gap: 10px; }
+
+  .photo-box { border-radius: 10px; }
+}
+
+@media (max-width: 600px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-card, .card {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .profile-icon { font-size: 30px; }
+  .name, .likes, .feed-title {
+    font-size: 15px;
+  }
+
+  .hello-btn, .read-btn { padding: 10px 12px; font-size: 15px; }
 }
