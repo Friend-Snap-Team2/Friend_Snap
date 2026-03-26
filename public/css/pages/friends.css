@@ -210,3 +210,16 @@
   align-items: center;
   flex-shrink: 0;
 }
+
+.friends-search {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#friend-search {
+  width: 60%;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}

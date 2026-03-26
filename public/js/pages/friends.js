@@ -2,9 +2,11 @@ function showTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(tab => {
     tab.style.display = 'none';
   });
+
   document.querySelectorAll('.tab').forEach(btn => {
     btn.classList.remove('active');
   });
+
   document.getElementById(tabName).style.display = 'block';
   event.target.classList.add('active');
 }
@@ -13,10 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   const suggestionsEl = document.getElementById('suggestions');
   const friendsEl = document.getElementById('friends');
+  const searchInput = document.getElementById('friend-search');
 
-  // =====================================
-  // LOAD SUGGESTIONS
-  // =====================================
+  let allSuggestions = [];
+  let allFriends = [];
+
+  // ----------------------------
+  // Load Suggestions
+  // ----------------------------
   async function loadSuggestions() {
     try {
       const res = await fetch('/api/auth/suggestions', {
@@ -24,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (!res.ok) return;
       const data = await res.json();
-      renderSuggestions(data.users || []);
+      allSuggestions = data.users || [];
+      renderSuggestions(allSuggestions);
     } catch (err) {
       console.error('Suggestions fetch error', err);
     }
@@ -54,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const avatarDiv = document.createElement('div');
       avatarDiv.className = 'friend-avatar';
-
       const avatarImg = document.createElement('img');
       avatarImg.src = `/assets/avatars/avatar-${user.avatar ?? 0}.png`;
       avatarImg.alt = user.nickname;
@@ -70,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const addBtn = document.createElement('button');
       addBtn.className = 'suggest-add-btn';
       addBtn.textContent = 'Add Friend';
-
       addBtn.addEventListener('click', async () => {
         try {
           const r = await fetch('/api/auth/addfriend', {
@@ -97,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const blockBtn = document.createElement('button');
       blockBtn.className = 'friend-block-btn';
       blockBtn.textContent = 'Block';
-
       blockBtn.addEventListener('click', async () => {
         try {
           const r = await fetch('/api/auth/block', {
@@ -108,12 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({ id: user.id })
           });
-          if (r.ok) {
-            card.remove();
-          } else {
-            const err = await r.json().catch(() => ({}));
-            alert(err.message || 'Could not block user');
-          }
+          if (r.ok) card.remove();
+          else alert('Could not block user');
         } catch (err) {
           console.error('Block request failed', err);
         }
@@ -130,9 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // =====================================
-  // LOAD FRIENDS
-  // =====================================
+  // ----------------------------
+  // Load Friends
+  // ----------------------------
   async function loadFriends() {
     try {
       const res = await fetch('/api/auth/friends', {
@@ -140,7 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (!res.ok) return;
       const data = await res.json();
-      renderFriends(data.friends || []);
+      allFriends = data.friends || [];
+      renderFriends(allFriends);
     } catch (err) {
       console.error('Friends fetch error', err);
     }
@@ -172,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const avatarDiv = document.createElement('div');
       avatarDiv.className = 'friend-avatar';
-
       const avatarImg = document.createElement('img');
       avatarImg.src = `/assets/avatars/avatar-${friend.avatar ?? 0}.png`;
       avatarImg.alt = friend.nickname;
@@ -185,11 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
       info.appendChild(avatarDiv);
       info.appendChild(name);
 
-      // ✅ block button added
       const blockBtn = document.createElement('button');
       blockBtn.className = 'friend-block-btn';
       blockBtn.textContent = 'Block';
-
       blockBtn.addEventListener('click', async () => {
         try {
           const r = await fetch('/api/auth/block', {
@@ -200,12 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({ id: friend.id })
           });
-          if (r.ok) {
-            card.remove();
-          } else {
-            const err = await r.json().catch(() => ({}));
-            alert(err.message || 'Could not block user');
-          }
+          if (r.ok) card.remove();
+          else alert('Could not block user');
         } catch (err) {
           console.error('Block request failed', err);
         }
@@ -217,6 +211,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ----------------------------
+  // SEARCH FUNCTIONALITY
+  // ----------------------------
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    // If query is empty, show all users
+    const filteredSuggestions = query
+      ? allSuggestions.filter(u => u.nickname.toLowerCase().includes(query))
+      : allSuggestions;
+    renderSuggestions(filteredSuggestions);
+
+    const filteredFriends = query
+      ? allFriends.filter(f => f.nickname.toLowerCase().includes(query))
+      : allFriends;
+    renderFriends(filteredFriends);
+  });
+
+  // ----------------------------
+  // Initial Load
+  // ----------------------------
   loadSuggestions();
   loadFriends();
 });
