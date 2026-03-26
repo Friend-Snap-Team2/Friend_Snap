@@ -97,13 +97,13 @@
 /* ── Emoji bar row ── */
 .emoji-bar-row { display:flex; align-items:center; gap:8px; }
 
-/* Game button wrapper — for badge positioning */
+/* Game button wrapper */
 .game-btn-wrap { position:relative; flex-shrink:0; }
 
 .game-btn {
-  width:58px; height:58px; border-radius:16px; border:none;
+  width:46px; height:46px; border-radius:14px; border:none;
   background:linear-gradient(135deg,#667eea,#764ba2);
-  font-size:26px; cursor:pointer;
+  font-size:22px; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
   box-shadow:0 3px 10px rgba(102,126,234,0.4);
   transition:transform 0.15s, box-shadow 0.15s;
@@ -111,7 +111,6 @@
 .game-btn:hover  { transform:scale(1.08); }
 .game-btn:active { transform:scale(0.95); }
 
-/* Red dot badge on 🎮 button */
 .game-badge {
   position:absolute; top:-4px; right:-4px;
   width:14px; height:14px;
@@ -122,32 +121,41 @@
 }
 @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
 
-.emoji-label {
-  font-size:10px; color:#bbb; font-weight:700; letter-spacing:1px;
-  white-space:nowrap; writing-mode:vertical-rl; transform:rotate(180deg); margin:0 2px;
+/* ── Emoji bar — smaller buttons with visible gaps ── */
+.emoji-bar {
+  display:flex; align-items: center;
+  gap:6px;           /* visible gap between buttons */
+  flex:1;
+  justify-content:space-between;
+  overflow-x:auto;
 }
-.emoji-bar { display:flex; gap:8px; flex:1; justify-content:space-between; overflow-x:auto; }
 .emoji-bar::-webkit-scrollbar { display:none; }
+
 .emoji-btn {
-  background:#fff8f2; border:1.5px solid #ffe0c8; border-radius:16px;
-  font-size:34px; cursor:pointer; flex:1; height:58px; min-width:0;
-  display:flex; align-items:center; justify-content:center; padding:0;
+  background:#fff8f2;
+  border:1.5px solid #ffe0c8;
+  border-radius:12px;
+  font-size:26px;    /* smaller emoji */
+  cursor:pointer;
+  flex:1;
+  height:46px;       /* shorter to match game button */
+  min-width:36px;    /* stops them getting too tiny on small screens */
+  display:flex; align-items:center; justify-content:center;
+  padding:0;
   transition:transform 0.1s, background 0.1s;
 }
-.emoji-btn:hover  { background:#ffe8d5; transform:scale(1.15); }
+.emoji-btn:hover  { background:#ffe8d5; transform:scale(1.12); }
 .emoji-btn:active { transform:scale(0.95); }
 
 /* =============================================
    FLOATING GAME WINDOW
-   Sits above the footer, bottom-right corner.
    ============================================= */
 #game-float {
   position:fixed;
-  /* Anchor to top of message area, right side.
-     The chat header is ~68px tall, so top:68px puts this just below it.
-     This keeps the float completely clear of the emoji bar and footer. */
-  top:68px;
-  right:12px;
+  bottom:220px;
+  left:12px;
+  top: auto;
+  right: auto;
   width:280px;
   background:#fff;
   border-radius:20px;
@@ -155,7 +163,6 @@
   z-index:150;
   overflow:hidden;
   animation:floatIn 0.3s ease;
-  /* Cap height so it never overlaps the emoji section */
   max-height: calc(100vh - 68px - 200px);
 }
 @keyframes floatIn {
@@ -163,7 +170,6 @@
   to   { transform:translateY(0);    opacity:1; }
 }
 
-/* ── Collapsed bar (always visible) ── */
 .gf-bar {
   display:flex; align-items:center; gap:8px;
   padding:10px 14px;
@@ -173,7 +179,6 @@
 .gf-bar-icon { font-size:20px; }
 .gf-bar-title { flex:1; font-size:14px; font-weight:700; color:#fff; }
 
-/* Red badge on the float bar */
 .gf-bar-badge {
   width:18px; height:18px; background:#ff3b30;
   border-radius:50%; border:2px solid #fff;
@@ -190,9 +195,7 @@
 }
 .gf-toggle-btn:hover, .gf-close-btn:hover { background:rgba(255,255,255,0.35); }
 
-/* ── Expandable panel ── */
 .gf-panel { padding:16px 16px 14px; }
-
 .gf-sub { font-size:14px; color:#555; text-align:center; margin-bottom:12px; }
 
 .gf-spinner {
@@ -221,7 +224,6 @@
   margin-bottom:10px;
 }
 
-/* ── Board ── */
 .game-board {
   display:grid; grid-template-columns:repeat(3,1fr);
   gap:6px; margin:0 auto 10px; max-width:240px;
@@ -238,7 +240,6 @@
 .board-cell.cell-x { color:#ff6a2d; background:#fff3ee; }
 .board-cell.cell-o { color:#764ba2; background:#f3eeff; }
 
-/* ── Result ── */
 .gf-result-emoji {
   font-size:48px; text-align:center; display:block;
   margin-bottom:4px; animation:bounce 0.5s ease;

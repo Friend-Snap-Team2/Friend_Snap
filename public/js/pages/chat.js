@@ -285,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (!r.ok) { alert((await r.json()).message); return; }
       const data = await r.json();
+      // data.game._id is now the Chat document _id (used as gameId in all game routes)
       currentGameId = data.game._id;
 
       document.getElementById('gfBarTitle').textContent = 'Tic-Tac-Toe';
@@ -526,18 +527,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =============================================
-  // INIT — restore state if page was refreshed mid-chat
+  // INIT — always start on the friends list
   // =============================================
-  const savedFriend = localStorage.getItem('currentFriend');
-  if (savedFriend) {
-    try {
-      // Re-open the chat immediately without waiting for friend list load
-      openChat(JSON.parse(savedFriend));
-    } catch (e) {
-      localStorage.removeItem('currentFriend');
-      loadFriends();
-    }
-  } else {
-    loadFriends();
-  }
+  localStorage.removeItem('currentFriend'); // clear any saved chat from a previous visit
+  loadFriends();
 });
