@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const addBox = document.getElementById('addBox');
   const uploadInput = document.getElementById('uploadPhotosInput');
   const gallery = document.getElementById('uploadGallery');
+  const uploadButton = document.getElementById('uploadButton');
+  const uploadStatus = document.getElementById('uploadStatus');
+
+  // keep selected files to upload
+  let selectedFiles = [];
 
   // Clicking anywhere on the add box opens file picker
   addBox.addEventListener('click', () => uploadInput.click());
@@ -26,9 +31,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const files = Array.from(event.target.files);
     files.forEach(file => {
       if (!file.type.startsWith('image/')) return;
+      selectedFiles.push(file);
       showPreview(file);
     });
     uploadInput.value = '';
+  });
+
+  // Upload selected files to server
+  uploadButton.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!selectedFiles.length) {
+      uploadStatus.textContent = 'No photos selected';
+      return;
+    }
+
+    uploadButton.disabled = true;
+    uploadStatus.textContent = 'Uploading...';
+
+    try {
+      const fd = new FormData();
+      selectedFiles.forEach(f => fd.append('photos', f));
+
+      const token = localStorage.getItem('token');
+
+      const res = await fetch('/api/photos', {
+        method: 'POST',
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+        body: fd
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        uploadStatus.textContent = err.message || 'Upload failed';
+        uploadButton.disabled = false;
+        return;
+      }
+
+      const data = await res.json();
+      uploadStatus.textContent = 'Uploaded ' + (data.photos ? data.photos.length : selectedFiles.length) + ' photo(s)';
+      // clear selection & previews
+      selectedFiles = [];
+      gallery.innerHTML = '';
+    } catch (err) {
+      console.error('Upload error', err);
+      uploadStatus.textContent = 'Upload failed';
+    } finally {
+      uploadButton.disabled = false;
+    }
   });
 
   // =====================================

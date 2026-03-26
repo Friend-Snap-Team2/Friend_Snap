@@ -115,3 +115,52 @@ function renderBlockedUsers(users) {
 
 loadProfileData();
 loadBlockedUsers();
+
+// Show my photos popup when photos-card clicked
+document.addEventListener('DOMContentLoaded', () => {
+  const photosCard = document.querySelector('.photos-card');
+  const popup = document.getElementById('my-photos-popup');
+  const closeBtn = document.getElementById('my-photos-close');
+  const grid = document.getElementById('my-photos-grid');
+
+  if (photosCard) photosCard.addEventListener('click', async () => {
+    // open popup
+    popup.style.display = 'flex';
+    grid.innerHTML = '<p style="width:100%;text-align:center;color:#666">Loading...</p>';
+
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch('/api/photos/mine', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!res.ok) {
+        grid.innerHTML = '<p style="width:100%;text-align:center;color:#c33">Could not load photos</p>';
+        return;
+      }
+      const data = await res.json();
+      grid.innerHTML = '';
+      if (!data.photos || !data.photos.length) {
+        grid.innerHTML = '<p style="width:100%;text-align:center;color:#666">No photos yet</p>';
+        return;
+      }
+
+      data.photos.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.url;
+        img.style.width = '150px';
+        img.style.height = '150px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '10px';
+        grid.appendChild(img);
+      });
+
+    } catch (err) {
+      console.error('My photos error', err);
+      grid.innerHTML = '<p style="width:100%;text-align:center;color:#c33">Error loading</p>';
+    }
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', () => { popup.style.display = 'none'; });
+  // close when clicking overlay
+  if (popup) popup.addEventListener('click', (e) => { if (e.target === popup) popup.style.display = 'none'; });
+});

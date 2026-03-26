@@ -107,4 +107,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   loadSuggestions();
+  loadPhotoFeed();
+
+  async function loadPhotoFeed() {
+    const grid = document.querySelector('.photo-grid');
+    if (!grid) return;
+    try {
+      const res = await fetch('/api/photos');
+      if (!res.ok) return;
+      const data = await res.json();
+      renderFeed((data.photos || []));
+    } catch (err) {
+      console.error('Photo feed error', err);
+    }
+  }
+
+  function renderFeed(photos) {
+    const grid = document.querySelector('.photo-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    if (!photos.length) {
+      grid.innerHTML = '<p style="text-align:center;color:#666">No photos yet</p>';
+      return;
+    }
+
+    photos.forEach(p => {
+      const box = document.createElement('div');
+      box.className = 'photo-box';
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.alt = p.owner ? p.owner.nickname : 'photo';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      box.appendChild(img);
+      grid.appendChild(box);
+    });
+  }
 });
