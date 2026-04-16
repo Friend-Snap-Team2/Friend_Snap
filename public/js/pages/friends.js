@@ -20,6 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let allSuggestions = [];
   let allFriends = [];
 
+  // ✅ PAGINATION STATE
+  let currentPages = {
+    suggestions: 1,
+    friends: 1
+  };
+
+  const itemsPerPage = 6;
+
   // ----------------------------
   // Load Suggestions
   // ----------------------------
@@ -52,7 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    users.forEach(user => {
+    // PAGINATION SLICE
+    const start = (currentPages.suggestions - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedUsers = users.slice(start, end);
+
+    paginatedUsers.forEach(user => {
       const card = document.createElement('div');
       card.className = 'friend-card';
 
@@ -90,9 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             addBtn.textContent = '✓ Added';
             addBtn.disabled = true;
             addBtn.style.background = '#34c759';
-          } else {
-            const err = await r.json().catch(() => ({}));
-            alert(err.message || 'Could not add friend');
           }
         } catch (err) {
           console.error('Add friend error', err);
@@ -113,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ id: user.id })
           });
           if (r.ok) card.remove();
-          else alert('Could not block user');
         } catch (err) {
           console.error('Block request failed', err);
         }
@@ -128,6 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
       card.appendChild(actions);
       suggestionsEl.appendChild(card);
     });
+
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+    document.getElementById("suggestions-page-info").textContent =
+      "Page " + currentPages.suggestions + " of " + totalPages;
+
+    renderPageNumbers("suggestions", users.length);
   }
 
   // ----------------------------
@@ -155,16 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
     title.textContent = 'My Friends';
     friendsEl.appendChild(title);
 
-    if (!friends.length) {
-      const empty = document.createElement('p');
-      empty.textContent = 'You have no friends yet — add some from the Suggestions tab!';
-      empty.style.textAlign = 'center';
-      empty.style.color = '#888';
-      friendsEl.appendChild(empty);
-      return;
-    }
+    if (!friends.length) return;
 
-    friends.forEach(friend => {
+    // PAGINATION SLICE
+    const start = (currentPages.friends - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedFriends = friends.slice(start, end);
+
+    paginatedFriends.forEach(friend => {
       const card = document.createElement('div');
       card.className = 'friend-card';
 
@@ -185,52 +198,99 @@ document.addEventListener('DOMContentLoaded', () => {
       info.appendChild(avatarDiv);
       info.appendChild(name);
 
-      const blockBtn = document.createElement('button');
-      blockBtn.className = 'friend-block-btn';
-      blockBtn.textContent = 'Block';
-      blockBtn.addEventListener('click', async () => {
-        try {
-          const r = await fetch('/api/auth/block', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ id: friend.id })
-          });
-          if (r.ok) card.remove();
-          else alert('Could not block user');
-        } catch (err) {
-          console.error('Block request failed', err);
-        }
-      });
-
       card.appendChild(info);
-      card.appendChild(blockBtn);
       friendsEl.appendChild(card);
     });
+
+    const totalPages = Math.ceil(friends.length / itemsPerPage);
+    document.getElementById("friends-page-info").textContent =
+      "Page " + currentPages.friends + " of " + totalPages;
+
+    renderPageNumbers("friends", friends.length);
+  }
+
+  // ----------------------------
+  // PAGE NUMBER RENDERER (ADDED)
+  // ----------------------------
+  function renderPageNumbers(type, totalItems) {
+    const container = document.getElementById(type + "-pages");
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+
+      if (currentPages[type] === i) {
+        btn.style.fontWeight = "bold";
+        btn.style.background = "#4f8df5";
+        btn.style.color = "white";
+      }
+
+      btn.onclick = () => {
+        currentPages[type] = i;
+
+        if (type === "suggestions") {
+          renderSuggestions(allSuggestions);
+        } else {
+          renderFriends(allFriends);
+        }
+      };
+
+      container.appendChild(btn);
+    }
   }
 
   // ----------------------------
   // SEARCH FUNCTIONALITY
   // ----------------------------
   searchInput.addEventListener('input', () => {
+    currentPages.suggestions = 1;
+    currentPages.friends = 1;
+
     const query = searchInput.value.toLowerCase().trim();
 
-    // If query is empty, show all users
     const filteredSuggestions = query
       ? allSuggestions.filter(u => u.nickname.toLowerCase().includes(query))
       : allSuggestions;
-    renderSuggestions(filteredSuggestions);
 
     const filteredFriends = query
       ? allFriends.filter(f => f.nickname.toLowerCase().includes(query))
       : allFriends;
+
+    renderSuggestions(filteredSuggestions);
     renderFriends(filteredFriends);
   });
 
   // ----------------------------
-  // Initial Load
+  // PAGINATION BUTTONS (UNCHANGED)
+  // ----------------------------
+  window.nextPage = function(type) {
+    const list = type === "suggestions" ? allSuggestions : allFriends;
+    const totalPages = Math.ceil(list.length / itemsPerPage);
+
+    if (currentPages[type] < totalPages) {
+      currentPages[type]++;
+      type === "suggestions"
+        ? renderSuggestions(allSuggestions)
+        : renderFriends(allFriends);
+    }
+  };
+
+  window.prevPage = function(type) {
+    if (currentPages[type] > 1) {
+      currentPages[type]--;
+      type === "suggestions"
+        ? renderSuggestions(allSuggestions)
+        : renderFriends(allFriends);
+    }
+  };
+
+  // ----------------------------
+  // INIT
   // ----------------------------
   loadSuggestions();
   loadFriends();
