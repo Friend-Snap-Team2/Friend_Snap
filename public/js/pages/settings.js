@@ -20,12 +20,13 @@ function setTextSize(size){
 }
 
 function applyTextSize(size){
+  let scale = 1;
 
   if(size === "large"){
-    document.body.style.fontSize = "20px";
-  } else {
-    document.body.style.fontSize = "16px";
+    scale = 1.25;
   }
+
+  document.documentElement.style.setProperty("--text-scale", scale);
 }
 
 // LOAD SAVED SETTINGS
