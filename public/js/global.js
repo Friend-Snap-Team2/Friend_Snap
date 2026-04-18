@@ -1,11 +1,18 @@
+function applySavedTheme(theme) {
+  document.body.classList.remove("light", "dark", "high");
+  document.body.classList.add(theme);
+}
+
+function applySavedTextSize(size) {
+  const scale = size === "large" ? 1.25 : 1;
+  document.documentElement.style.setProperty("--text-scale", scale);
+}
+
 const savedTheme = localStorage.getItem("theme") || "light";
-document.body.classList.add(savedTheme);
+applySavedTheme(savedTheme);
 
 const savedSize = localStorage.getItem("textSize") || "normal";
-
-if(savedSize === "large"){
-  document.body.style.fontSize = "20px";
-}
+applySavedTextSize(savedSize);
 
 function runAuthGuard() {
   const token = localStorage.getItem('token');
@@ -39,9 +46,6 @@ function logout() {
   localStorage.removeItem('createdAt');
   window.location.href = '/index.html';
 }
-
-// Run on every page
-checkAuth();
 
 function getAvatarPath(index) {
   return `/assets/avatars/avatar-${index}.png`;

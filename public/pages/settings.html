@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Settings</title>
+  <link rel="icon" type="image/png" href="/assets/icon_placeholder.png">
 
-<link rel="stylesheet" href="../css/global.css">
-<link rel="stylesheet" href="../css/settings.css">
+<link rel="stylesheet" href="../css/global.css?v=2">
+<link rel="stylesheet" href="../css/pages/settings.css?v=2">
 
-<script src="../js/settings.js" defer></script>
 </head>
 
 <body>
@@ -24,9 +26,9 @@
     <p class="setting-desc">Pick a colour style</p>
 
     <div class="setting-buttons">
-      <button onclick="setTheme('light')">🌞 Light</button>
-      <button onclick="setTheme('dark')">🌙 Dark</button>
-      <button onclick="setTheme('high')">⚫ High Contrast</button>
+      <button type="button" data-theme="light">🌞 Light</button>
+      <button type="button" data-theme="dark">🌙 Dark</button>
+      <button type="button" data-theme="high">⚫ High Contrast</button>
     </div>
   </div>
 
@@ -36,14 +38,79 @@
     <p class="setting-desc">Make text easier to read</p>
 
     <div class="setting-buttons">
-      <button onclick="setTextSize('normal')">A Normal</button>
-      <button onclick="setTextSize('large')">A Large</button>
+      <button type="button" data-text-size="normal">Normal</button>
+      <button type="button" data-text-size="large">Large</button>
     </div>
   </div>
 
 </main>
 
 <div id="footer"></div>
+
+<script src="/js/global.js?v=2"></script>
+<script src="/js/pages/settings.js?v=2"></script>
+<script>
+  (function () {
+    function fallbackApplyTheme(theme) {
+      document.body.classList.remove('light', 'dark', 'high');
+      document.body.classList.add(theme);
+      localStorage.setItem('theme', theme);
+
+      const settingBoxes = document.querySelectorAll('.setting-box');
+
+      if (theme === 'dark') {
+        document.body.style.background = '#121212';
+        document.body.style.color = '#ffffff';
+        settingBoxes.forEach((box) => {
+          box.style.background = '#1e1e1e';
+          box.style.color = '#ffffff';
+        });
+      } else if (theme === 'high') {
+        document.body.style.background = '#000000';
+        document.body.style.color = '#ffff00';
+        settingBoxes.forEach((box) => {
+          box.style.background = '#000000';
+          box.style.color = '#ffff00';
+          box.style.border = '2px solid #ffff00';
+        });
+      } else {
+        document.body.style.background = '#F6E8DA';
+        document.body.style.color = '#000000';
+        settingBoxes.forEach((box) => {
+          box.style.background = '#ffffff';
+          box.style.color = '#000000';
+          box.style.border = 'none';
+        });
+      }
+    }
+
+    function fallbackApplyTextSize(size) {
+      const scale = size === 'large' ? 1.25 : 1;
+      document.documentElement.style.setProperty('--text-scale', scale);
+      localStorage.setItem('textSize', size);
+    }
+
+    document.querySelectorAll('[data-theme]').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (typeof window.setTheme === 'function') {
+          window.setTheme(button.dataset.theme);
+        } else {
+          fallbackApplyTheme(button.dataset.theme);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-text-size]').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (typeof window.setTextSize === 'function') {
+          window.setTextSize(button.dataset.textSize);
+        } else {
+          fallbackApplyTextSize(button.dataset.textSize);
+        }
+      });
+    });
+  })();
+</script>
 
 </body>
 </html>
