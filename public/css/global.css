@@ -9,12 +9,13 @@ body {
   flex-direction: column;
 }
 
-:root {
-  --text-scale: 1;
+body {
+  font-size: calc(16px * var(--text-scale, 1)); /* ADDED FIXED DEFAULT */
 }
 
-html {
-  font-size: calc(16px * var(--text-scale));
+:root {
+  --text-scale: 1;
+  --box-bg: #ffffff; /* ADDED */
 }
 
 /* top bar */
@@ -28,43 +29,6 @@ html {
   border-bottom: 1px solid #ddd;
 }
 
-.user {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.avatar {
-  font-size: 28px;
-}
-
-.hello {
-  font-size: 18px;
-  color: #888;
-}
-
-.username {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.read-btn {
-  margin-left: auto;
-  margin-right: 20px;
-  gap: 25px;
-  background: #4f8df5;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.settings {
-  font-size: 28px;
-  cursor: pointer;
-}
-
 /* container */
 
 .container {
@@ -75,340 +39,35 @@ html {
   padding-bottom: 220px;
 }
 
-main {
-  padding-bottom: 240px;
-}
-
-.page-content {
-  padding-bottom: 220px;
-}
-
-body {
-  padding-bottom: 100px;
-}
-
-.navbar {
-  z-index: 999;
-}
-
-.subtitle {
-  color: #777;
-  font-size: 14px;
-  margin-top: -10px;
-}
-
-/* bottom nav */
-
-.navbar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  border-top: 1px solid #ddd;
-  display: flex;
-  justify-content: space-around;
-  padding: 20px 0;
-}
-
-.nav {
-  text-align: center;
-  font-size: 14px;
-  color: #777;
-}
-
-.nav span {
-  display: block;
-  font-size: 20px;
-}
-
-.nav.active {
-  color: #ff7b3a;
-}
-
-/* help button */
-
-.help {
-  position: fixed;
-  bottom: 95px;
-  right: 10px;
-  background: #4f8df5;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 20px;
-}
-
-.avatar img {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.header-logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.header-logo img {
-  width: 65px;
-  height: 65px;
-  object-fit: contain;
-}
-
-/* Global mobile-first responsive overrides */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-button, input, select, textarea {
-  font: inherit;
-}
-
-.read-btn, .help, .chat-btn, .comment-btn, .logout-btn, .blocked-btn, .suggest-add-btn,
-.take-btn, .pick-btn, .friends-tabs .tab, .once, .gf-accept-btn, .gf-decline-btn {
-  min-height: 44px;
-  font-size: 15px;
-}
-
-.container {
-  width: 100%;
-  max-width: 1100px;
-  margin: 22px auto;
-  padding: 0 14px 220px;
-  box-sizing: border-box;
-}
-
-main {
-  padding-bottom: 240px;
-}
-
-.page-content {
-  padding-bottom: 220px;
-}
-
-@media (max-width: 900px) {
-  .topbar {
-    padding: 12px;
-  }
-
-  .user .username, .hello {
-    font-size: 16px;
-  }
-
-  .read-btn {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
-
-  .navbar {
-    padding: 14px 0;
-  }
-
-  .nav {
-    font-size: 12px;
-  }
-
-  .nav span {
-    font-size: 18px;
-  }
-
-  .help {
-    padding: 10px 14px;
-    right: 8px;
-    bottom: 86px;
-  }
-
-  .avatar img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .header-logo img {
-    width: 52px;
-    height: 52px;
-  }
-
-  .container {
-    margin: 16px auto;
-  }
-}
-
-@media (max-width: 600px) {
-  .topbar {
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-
-  .user {
-    gap: 8px;
-  }
-
-  .container {
-    margin: 10px auto;
-    padding: 0 10px;
-  }
-
-  .navbar {
-    padding: 12px 0;
-  }
-
-  .nav {
-    font-size: 12px;
-  }
-
-  .nav span { font-size: 18px; }
-
-  .read-btn, .help {
-    padding: 10px 14px;
-  }
-
-  .help {
-    right: 8px;
-    bottom: 84px;
-  }
-
-  .header-logo {
-    left: 50%;
-    transform: translateX(-50%);
-    top: 8px;
-  }
-
-  .header-logo img {
-    width: 48px;
-    height: 48px;
-  }
-
-  .read-btn, .read-banner {
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    border-radius: 50%;
-    text-indent: -9999px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .read-btn::after,
-  .read-banner::after {
-    content: '🔊';
-    text-indent: 0;
-    font-size: 24px;
-    line-height: 1;
-    position: absolute;
-  }
-
-  .container,
-  .page-content {
-    padding-bottom: 240px;
-  }
-
-  body { padding-bottom: 120px; }
-}
-
-@media (max-width: 480px) {
-  html, body { min-height: 100%; height: 100%; width: 100%; }
-  body {
-    min-height: 100vh;
-    width: 100vw;
-    overflow-x: hidden;
-    font-size: 19px;
-    line-height: 1.5;
-    background: #f4f6f8;
-  }
-
-  .topbar { padding: 16px 12px; }
-  .nav { font-size: 14px; }
-  .nav span { font-size: 22px; }
-
-  button, .read-btn, .help, .chat-btn, .comment-btn, .logout-btn, .blocked-btn,
-  .suggest-add-btn, .take-btn, .pick-btn, .tab {
-    min-height: 56px;
-    padding: 14px 20px;
-    font-size: 17px;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 12px 12px 280px;
-    min-height: calc(100vh - 70px);
-    box-sizing: border-box;
-  }
-
-  main {
-    padding-bottom: 280px;
-    min-height: calc(100vh - 70px);
-  }
-
-  .profile-page {
-    max-width: 100%;
-    margin: 0;
-    padding: 0 12px;
-  }
-
-  .profile-card,
-  .card,
-  .friend-card,
-  .photos-card,
-  .rules-card,
-  .add-box {
-    padding: 28px;
-    border-radius: 24px;
-  }
-
-  .profile-avatar img { width: 180px; height: 180px; }
-
-  .photos-icon { width: 60px; height: 60px; font-size: 28px; }
-
-  h2, h3 {
-    font-size: clamp(22px, 6vw, 28px);
-  }
-
-  .photo-grid { grid-template-columns: repeat(1, minmax(100%, 1fr)); }
-}
+/* ========================= */
+/* ✅ ADDED THEME SYSTEM FIX */
+/* ========================= */
 
 /* LIGHT (default) */
 body.light {
   background: #F6E8DA;
   color: #000;
+  --box-bg: #ffffff; /* ADDED */
 }
 
 /* DARK MODE */
 body.dark {
   background: #121212;
   color: #ffffff;
+  --box-bg: #1e1e1e; /* ADDED */
 }
 
-body.dark .card,
-body.dark .setting-box {
-  background: #1e1e1e;
-}
-
-body.dark button {
-  background: #333;
-  color: white;
-}
-
-/* HIGH CONTRAST (BEST FOR ACCESSIBILITY) */
+/* HIGH CONTRAST */
 body.high {
   background: #000000;
   color: #FFFF00;
+  --box-bg: #000000; /* ADDED */
 }
 
-body.high button {
-  background: #FFFF00;
-  color: #000000;
+/* SETTINGS BOX SUPPORT */
+body.dark .card,
+body.dark .setting-box {
+  background: #1e1e1e;
 }
 
 body.high .setting-box {
@@ -416,17 +75,7 @@ body.high .setting-box {
   border: 2px solid yellow;
 }
 
-/* DARK MODE FIXES */
-body.dark .topbar,
-body.dark .navbar {
-  background: #1e1e1e;
-  color: white;
-}
-
-/* HIGH CONTRAST FIXES */
-body.high .topbar,
-body.high .navbar {
-  background: black;
-  color: yellow;
-  border-color: yellow;
+/* APPLY BOX VARIABLE (IMPORTANT) */
+.setting-box {
+  background: var(--box-bg); /* ADDED SAFETY FIX */
 }

@@ -7,12 +7,24 @@ if(savedSize === "large"){
   document.body.style.fontSize = "20px";
 }
 
-function checkAuth() {
+function runAuthGuard() {
   const token = localStorage.getItem('token');
-  if (!token) {
+
+  const path = window.location.pathname;
+
+  const isLoginPage = path.includes('index.html');
+
+  // only protect app pages, NOT login or public pages
+  const protectedPages = ['home', 'friends', 'chat', 'me', 'add-photo'];
+
+  const isProtected = protectedPages.some(p => path.includes(p));
+
+  if (!token && isProtected) {
     window.location.href = '/index.html';
   }
 }
+
+runAuthGuard();
 
 async function loadComponent(id, file) {
   const response = await fetch(file);
