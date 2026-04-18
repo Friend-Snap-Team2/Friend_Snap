@@ -5,17 +5,9 @@ html, body {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
   display: flex;
   flex-direction: column;
-}
-
-body {
-  font-size: calc(16px * var(--text-scale, 1)); /* ADDED FIXED DEFAULT */
-}
-
-:root {
-  --text-scale: 1;
-  --box-bg: #ffffff; /* ADDED */
 }
 
 /* top bar */
@@ -24,9 +16,41 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px 20px;
   background: #fff;
   border-bottom: 1px solid #ddd;
+}
+
+.user {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.avatar {
+  font-size: 28px;
+}
+
+.hello {
+  font-size: 12px;
+  color: #888;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.read-btn {
+  background: #4f8df5;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.settings {
+  font-size: 28px;
 }
 
 /* container */
@@ -36,46 +60,108 @@ body {
   width: 90%;
   max-width: 2000px;
   margin: 30px auto;
-  padding-bottom: 220px;
+  padding-bottom: 90px;
 }
 
-/* ========================= */
-/* ✅ ADDED THEME SYSTEM FIX */
-/* ========================= */
-
-/* LIGHT (default) */
-body.light {
-  background: #F6E8DA;
-  color: #000;
-  --box-bg: #ffffff; /* ADDED */
+.subtitle {
+  color: #777;
+  font-size: 14px;
+  margin-top: -10px;
 }
 
-/* DARK MODE */
-body.dark {
-  background: #121212;
-  color: #ffffff;
-  --box-bg: #1e1e1e; /* ADDED */
+/* bottom nav */
+
+.navbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
 }
 
-/* HIGH CONTRAST */
-body.high {
-  background: #000000;
-  color: #FFFF00;
-  --box-bg: #000000; /* ADDED */
+.nav {
+  text-align: center;
+  font-size: 14px;
+  color: #777;
 }
 
-/* SETTINGS BOX SUPPORT */
-body.dark .card,
-body.dark .setting-box {
-  background: #1e1e1e;
+.nav span {
+  display: block;
+  font-size: 12px;
 }
 
-body.high .setting-box {
-  background: #000;
-  border: 2px solid yellow;
+.nav.active {
+  color: #ff7b3a;
 }
 
-/* APPLY BOX VARIABLE (IMPORTANT) */
-.setting-box {
-  background: var(--box-bg); /* ADDED SAFETY FIX */
+/* help button */
+
+.help {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: #4f8df5;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+}
+.header-logo img {
+  height: 40px;
+  width: auto;
+}
+
+.avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.read-btn {
+  margin-left: auto;
+}
+
+.topbar {
+  position: relative;
+}
+
+.user {
+  min-width: 150px;
+}
+
+.read-btn {
+  margin-left: 0;
+  margin-right: 60px;
+}
+
+.topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 15px 20px !important;
+  background: #fff !important;
+  border-bottom: 1px solid #ddd !important;
+  position: relative !important;
+}
+
+.header-logo {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none;
+}
+
+.read-btn {
+  margin-left: 0 !important;
+  margin-right: 15px !important;
 }

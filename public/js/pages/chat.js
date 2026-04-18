@@ -66,10 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // READ ALOUD — reads every bubble with a label
   // =============================================
   document.getElementById('readAloudBtn').addEventListener('click', () => {
-    window.speechSynthesis.cancel();
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      document.getElementById('readAloudBtn').textContent = '🔊 Read Aloud';
+      return;
+    }
     const parts = [];
     const nick = document.getElementById('chatNickname').textContent;
     if (nick) parts.push(`Chat with ${nick}.`);
+    document.querySelectorAll('.chat-hint span').forEach(el => parts.push(el.textContent));
 
     document.querySelectorAll('.message-wrap').forEach(wrap => {
       const bubble = wrap.querySelector('.message-bubble');
@@ -79,9 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (!parts.length) parts.push('No messages yet.');
+    document.getElementById('readAloudBtn').textContent = '⏹ Stop';
     parts.forEach((text, i) => {
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 0.95;
+      if (i === parts.length - 1) {
+        u.onend = () => { document.getElementById('readAloudBtn').textContent = '🔊 Read Aloud'; };
+      }
       setTimeout(() => window.speechSynthesis.speak(u), i * 50);
     });
   });
