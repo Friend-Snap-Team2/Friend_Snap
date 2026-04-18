@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   const addBox = document.getElementById('addBox');
   const uploadInput = document.getElementById('uploadPhotosInput');
@@ -6,10 +6,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadButton = document.getElementById('uploadButton');
   const uploadStatus = document.getElementById('uploadStatus');
 
-  // keep selected files to upload
   let selectedFiles = [];
 
-  // Clicking anywhere on the add box opens file picker
+  // =====================================
+  // LOAD FACE DETECTION MODELS
+  // =====================================
+  async function loadModels() {
+    uploadStatus.textContent = 'Loading face detection...';
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/assets/models');
+    uploadStatus.textContent = '';
+  }
+
+  await loadModels();
+
+  // =====================================
+  // FACE DETECTION
+  // =====================================
+  async function containsFace(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+
+        img.onload = async () => {
+          const detection = await faceapi.detectSingleFace(
+            img,
+            new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.7 }) //increased tresghold not to catch animal faces as much
+          );
+          // returns detection object if face found, undefined if not
+          resolve(!!detection);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // =====================================
+  // FILE SELECTION
+  // =====================================
   addBox.addEventListener('click', () => uploadInput.click());
 
   function showPreview(file) {
@@ -27,26 +62,47 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.readAsDataURL(file);
   }
 
-  uploadInput.addEventListener('change', (event) => {
+  uploadInput.addEventListener('change', async (event) => {
     const files = Array.from(event.target.files);
-    files.forEach(file => {
-      if (!file.type.startsWith('image/')) return;
-      selectedFiles.push(file);
-      showPreview(file);
-    });
+
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+
+      uploadStatus.textContent = `Checking ${file.name}...`;
+
+      const hasFace = await containsFace(file);
+
+      if (hasFace) {
+        // Face detected — reject the photo
+        uploadStatus.textContent = `❌ "${file.name}" contains a person's face and cannot be uploaded. Please share photos of things, not people.`;
+        uploadStatus.style.color = '#ff3b30';
+      } else {
+        // No face — allow the photo
+        selectedFiles.push(file);
+        showPreview(file);
+        uploadStatus.textContent = '✅ Photo looks good!';
+        uploadStatus.style.color = '#34c759';
+      }
+    }
+
     uploadInput.value = '';
   });
 
-  // Upload selected files to server
+  // =====================================
+  // UPLOAD TO SERVER
+  // =====================================
   uploadButton.addEventListener('click', async (e) => {
     e.stopPropagation();
+
     if (!selectedFiles.length) {
       uploadStatus.textContent = 'No photos selected';
+      uploadStatus.style.color = '#888';
       return;
     }
 
     uploadButton.disabled = true;
     uploadStatus.textContent = 'Uploading...';
+    uploadStatus.style.color = '#888';
 
     try {
       const fd = new FormData();
@@ -63,18 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         uploadStatus.textContent = err.message || 'Upload failed';
+        uploadStatus.style.color = '#ff3b30';
         uploadButton.disabled = false;
         return;
       }
 
       const data = await res.json();
-      uploadStatus.textContent = 'Uploaded ' + (data.photos ? data.photos.length : selectedFiles.length) + ' photo(s)';
-      // clear selection & previews
+      uploadStatus.textContent = '✅ Uploaded ' + (data.photos ? data.photos.length : selectedFiles.length) + ' photo(s)';
+      uploadStatus.style.color = '#34c759';
       selectedFiles = [];
       gallery.innerHTML = '';
     } catch (err) {
       console.error('Upload error', err);
       uploadStatus.textContent = 'Upload failed';
+      uploadStatus.style.color = '#ff3b30';
     } finally {
       uploadButton.disabled = false;
     }
@@ -84,8 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // IDEAS POPUP
   // =====================================
 
-  // Define images for each category
-  // Add your actual filenames here as you add images to each folder
   const categoryImages = {
     animals: [
       '/assets/animals/animal-1.jpg',
@@ -123,12 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.openIdeas = function(category, icon, title) {
     document.getElementById('ideas-popup-title').textContent = icon + ' ' + title;
-
     const grid = document.getElementById('ideas-grid');
     grid.innerHTML = '';
-
     const images = categoryImages[category] || [];
-
     if (!images.length) {
       grid.innerHTML = '<p style="text-align:center;color:#888">No images yet!</p>';
     } else {
@@ -140,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         grid.appendChild(img);
       });
     }
-
     document.getElementById('ideas-popup').style.display = 'flex';
   }
 
@@ -148,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ideas-popup').style.display = 'none';
   }
 
-  // Close popup when clicking outside
   document.getElementById('ideas-popup').addEventListener('click', function(e) {
     if (e.target === this) closeIdeas();
   });
