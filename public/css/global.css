@@ -443,3 +443,81 @@ body.high .header-logo img {
 body.dark .chat-title {
   color: #ffffff !important;
 }
+
+/* Footer nav interaction */
+.nav {
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.nav:hover {
+  transform: translateY(-3px);
+  color: #ff7b3a;
+}
+
+.nav:active {
+  transform: scale(0.9);
+}
+
+.nav.active {
+  color: #ff7b3a;
+}
+
+.nav span {
+  font-size: 11px;
+  display: block;
+  text-align: center;
+}
+
+.pagination button {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 20px !important;
+  border-radius: 50% !important;
+  border: 2px solid #ff7b3a !important;
+  background: white !important;
+  color: #ff7b3a !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  transition: all 0.2s !important;
+}
+
+.pagination button:hover {
+  background: #ff7b3a !important;
+  color: white !important;
+}
+
+.setting-box button {
+  transition: all 0.2s ease !important;
+}
+
+.setting-box button:hover {
+  transform: scale(1.05) !important;
+  border-color: #ff7b3a !important;
+  color: #ff7b3a !important;
+  background: #fff5f0 !important;
+}
+
+.setting-box button:active {
+  transform: scale(0.95) !important;
+}
+
+.settings {
+  cursor: pointer;
+  font-size: 24px;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.settings:hover {
+  transform: rotate(60deg);
+}
+
+.settings:active {
+  transform: rotate(120deg) scale(0.9);
+}

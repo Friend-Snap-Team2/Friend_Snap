@@ -16,7 +16,6 @@ async function loadComponent(id, file) {
 loadComponent('header', '/components/header.html');
 loadComponent('footer', '/components/footer.html').then(() => {
 
-  // highlight the correct nav item based on current page
   const path = window.location.pathname;
   const navItems = document.querySelectorAll('.nav');
 
@@ -29,7 +28,6 @@ loadComponent('footer', '/components/footer.html').then(() => {
   ];
 
   navItems.forEach(item => item.classList.remove('active'));
-
   const match = pageMap.find(p => path.includes(p.path));
   if (match) navItems[match.index].classList.add('active');
 });
@@ -44,33 +42,44 @@ function checkAuth() {
   }
 }
 
-// Set username and avatar in header after it loads
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('nickname');
+  localStorage.removeItem('avatar');
+  localStorage.removeItem('createdAt');
+  window.location.href = '/index.html';
+}
+
+function removeEmojis(text) {
+  return text.replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     const nickname = localStorage.getItem('nickname');
     const avatar = localStorage.getItem('avatar') ?? 0;
-
     const usernameEl = document.querySelector('.username');
     if (usernameEl && nickname) usernameEl.textContent = nickname;
-
     const avatarEl = document.querySelector('.avatar img');
     if (avatarEl) avatarEl.src = `/assets/avatars/avatar-${avatar}.png`;
   }, 300);
 });
 
-// Read Aloud functionality
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     const readBtn = document.querySelector('.read-btn');
     if (readBtn) {
       readBtn.addEventListener('click', () => {
-        const text = document.querySelector('main')?.innerText || document.body.innerText;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
+        const isChat = window.location.pathname.includes('chat');
+        let rawText = document.querySelector('main')?.innerText || document.body.innerText;
+        const text = isChat ? rawText : removeEmojis(rawText);
+
         if (speechSynthesis.speaking) {
           speechSynthesis.cancel();
           readBtn.textContent = '🔊 Read Aloud';
         } else {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'en-US';
           speechSynthesis.speak(utterance);
           readBtn.textContent = '⏹ Stop';
           utterance.onend = () => {
