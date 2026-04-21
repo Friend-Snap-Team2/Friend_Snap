@@ -1,3 +1,12 @@
+// Apply saved theme and text size on every page load
+(function() {
+  const theme = localStorage.getItem('theme') || 'light';
+  const size = localStorage.getItem('textSize') || 'normal';
+  document.body.classList.add(theme);
+  const scale = size === 'large' ? 1.25 : 1;
+  document.documentElement.style.setProperty('--text-scale', scale);
+})();
+
 async function loadComponent(id, file) {
   const response = await fetch(file);
   const html = await response.text();
@@ -6,7 +15,7 @@ async function loadComponent(id, file) {
 
 loadComponent('header', '/components/header.html');
 loadComponent('footer', '/components/footer.html').then(() => {
-    
+
   // highlight the correct nav item based on current page
   const path = window.location.pathname;
   const navItems = document.querySelectorAll('.nav');
@@ -24,6 +33,7 @@ loadComponent('footer', '/components/footer.html').then(() => {
   const match = pageMap.find(p => path.includes(p.path));
   if (match) navItems[match.index].classList.add('active');
 });
+
 function checkAuth() {
   const token = localStorage.getItem('token');
   const path = window.location.pathname;

@@ -165,3 +165,281 @@ body {
   margin-left: 0 !important;
   margin-right: 15px !important;
 }
+
+body.dark {
+  background: #121212 !important;
+  color: #ffffff !important;
+}
+
+body.dark .setting-box,
+body.dark .card,
+body.dark .topbar,
+body.dark .navbar,
+body.dark .container {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.high {
+  background: #000000 !important;
+  color: #ffff00 !important;
+}
+
+body.high .setting-box,
+body.high .card,
+body.high .topbar,
+body.high .navbar {
+  background: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body {
+  font-size: calc(16px * var(--text-scale, 1)) !important;
+}
+
+/* Chat dark/high contrast */
+body.dark #chat-window-view,
+body.dark .chat-messages,
+body.dark .emoji-section {
+  background: #121212 !important;
+}
+
+body.dark .bubble-theirs {
+  background: #2e2e2e !important;
+  color: #ffffff !important;
+}
+
+body.high #chat-window-view,
+body.high .chat-messages,
+body.high .emoji-section {
+  background: #000000 !important;
+}
+
+body.high .bubble-theirs {
+  background: #000000 !important;
+  color: #ffff00 !important;
+}
+
+/* High contrast text fix */
+body.high .friend-name,
+body.high .suggest-title,
+body.high h1, body.high h2, body.high h3,
+body.high p, body.high span, body.high div {
+  color: #ffff00 !important;
+}
+
+body.high .friend-card,
+body.high .card,
+body.high .chat-card {
+  background: #000000 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.high .friend-name,
+body.high .friend-card *,
+body.high .card * {
+  color: #ffff00 !important;
+}
+
+body.high .chat-header,
+body.high .emoji-section,
+body.high .emoji-preview,
+body.high .emoji-btn {
+  background: #000000 !important;
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+body.high .chat-nickname,
+body.high .chat-online-label,
+body.high .chat-hint span {
+  color: #ffff00 !important;
+}
+
+body.high .emoji-preview-text {
+  color: #ffff00 !important;
+}
+
+body.high .chat-back-btn {
+  color: #ffff00 !important;
+}
+
+body.high .profile-card,
+body.high .rules-card {
+  background: #000000 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.high .profile-card *,
+body.high .rules-card * {
+  color: #ffff00 !important;
+}
+
+body.high .blocked-btn,
+body.high .logout-btn {
+  background: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.dark .friend-card {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .friend-name,
+body.dark .friend-card * {
+  color: #ffffff !important;
+}
+
+body.dark .chat-card {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .chat-card-name,
+body.dark .chat-card * {
+  color: #ffffff !important;
+}
+
+body.dark .profile-card,
+body.dark .rules-card {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .profile-card *,
+body.dark .rules-card * {
+  color: #ffffff !important;
+}
+
+body.dark .blocked-btn {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+}
+
+body.dark .chat-header {
+  background: #1e1e1e !important;
+  border-bottom-color: #333 !important;
+}
+
+body.dark .chat-nickname,
+body.dark .chat-back-btn {
+  color: #ffffff !important;
+}
+
+body.dark .emoji-section {
+  background: #1e1e1e !important;
+  border-top-color: #333 !important;
+}
+
+body.dark .emoji-preview {
+  background: #2e2e2e !important;
+  border-color: #555 !important;
+}
+
+body.dark .emoji-preview-text {
+  color: #aaaaaa !important;
+}
+
+body.dark .emoji-btn {
+  background: #2e2e2e !important;
+  border-color: #555 !important;
+}
+
+body.dark .idea {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .page-title,
+body.dark .ideas-title {
+  color: #ffffff !important;
+}
+
+body.high .idea {
+  background: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.high .page-title,
+body.high .ideas-title {
+  color: #ffff00 !important;
+}
+
+body.high .reminder {
+  background: #000000 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.high .reminder-title,
+body.high .reminder-text {
+  color: #ffff00 !important;
+}
+
+body.high .photo-feed {
+  background: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+body.high .photo-feed * {
+  color: #ffff00 !important;
+}
+
+body.high .subtitle,
+body.high p {
+  color: #ffff00 !important;
+}
+
+body.dark .photo-feed {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .photo-feed * {
+  color: #ffffff !important;
+}
+
+body.dark .card {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark .card * {
+  color: #ffffff !important;
+}
+
+body.dark .subtitle,
+body.dark p {
+  color: #cccccc !important;
+}
+
+body.dark .idea {
+  border: 1px solid #444444 !important;
+}
+
+body.dark .topbar {
+  background: #1e1e1e !important;
+  border-bottom-color: #333 !important;
+}
+
+body.dark .topbar * {
+  color: #ffffff !important;
+}
+
+
+body.dark .header-logo img {
+  content: url('/assets/icon_dark.png') !important;
+}
+
+body.high .header-logo img {
+  content: url('/assets/icon_dark.png') !important;
+}
+
+body.dark .chat-title {
+  color: #ffffff !important;
+}
