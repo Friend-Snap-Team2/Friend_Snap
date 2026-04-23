@@ -18,7 +18,6 @@ function showRegister() {
   clearMessage();
 }
 
-// Show a message to the user (red for errors, green for success)
 function showMessage(text, isError = true) {
   const messageBox = document.getElementById('message');
   messageBox.textContent = text;
@@ -31,7 +30,6 @@ function clearMessage() {
   messageBox.textContent = '';
   messageBox.style.display = 'none';
 }
-
 
 // Build the avatar picker grid
 function buildAvatarGrid() {
@@ -57,9 +55,98 @@ function buildAvatarGrid() {
   }
 }
 
-// Build the grid on page load
 buildAvatarGrid();
 
+// =====================================
+// BIOMETRIC LOGIN (WebAuthn)
+// =====================================
+
+function isBiometricAvailable() {
+  return window.PublicKeyCredential !== undefined;
+}
+
+async function registerBiometric(nickname) {
+  try {
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+
+    const credential = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: 'Friend Snap' },
+        user: {
+          id: new TextEncoder().encode(nickname),
+          name: nickname,
+          displayName: nickname,
+        },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform',
+          userVerification: 'required',
+        },
+        timeout: 60000,
+      }
+    });
+
+    if (credential) {
+      localStorage.setItem('biometric_enabled', 'true');
+      localStorage.setItem('biometric_nickname', nickname);
+      showMessage('✅ Biometric login enabled!', false);
+    }
+  } catch (err) {
+    console.error('Biometric registration failed:', err);
+  }
+}
+
+async function loginWithBiometric() {
+  const nickname = localStorage.getItem('biometric_nickname');
+  if (!nickname) {
+    showMessage('No biometric login saved. Please log in normally first.');
+    return;
+  }
+
+  try {
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        userVerification: 'required',
+        timeout: 60000,
+      }
+    });
+
+    if (assertion) {
+      // Biometric verified - log in with saved nickname
+      const savedNickname = localStorage.getItem('biometric_nickname');
+      const savedToken = localStorage.getItem('biometric_token');
+      const savedAvatar = localStorage.getItem('biometric_avatar');
+      const savedCreatedAt = localStorage.getItem('biometric_createdAt');
+
+      if (savedToken) {
+        localStorage.setItem('token', savedToken);
+        localStorage.setItem('nickname', savedNickname);
+        localStorage.setItem('avatar', savedAvatar);
+        localStorage.setItem('createdAt', savedCreatedAt);
+        window.location.href = '/pages/home.html';
+      } else {
+        showMessage('Please log in normally first to set up biometrics.');
+      }
+    }
+  } catch (err) {
+    console.error('Biometric login failed:', err);
+    showMessage('Biometric login failed. Please try again or use your password.');
+  }
+}
+
+// Show biometric button if available and enabled
+window.addEventListener('DOMContentLoaded', () => {
+  if (isBiometricAvailable() && localStorage.getItem('biometric_enabled')) {
+    const bioBtn = document.getElementById('biometricBtn');
+    if (bioBtn) bioBtn.style.display = 'block';
+  }
+});
 
 // Handle register form submission
 async function handleRegister() {
@@ -106,7 +193,6 @@ async function handleRegister() {
   }
 }
 
-
 // Handle login form submission
 async function handleLogin() {
   const nickname = document.getElementById('loginNickname').value.trim();
@@ -127,11 +213,23 @@ async function handleLogin() {
     const data = await response.json();
 
     if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('nickname', data.nickname);
-        localStorage.setItem('createdAt', data.createdAt);
-        localStorage.setItem('avatar', data.avatar ?? 0);
-        window.location.href = '/pages/home.html';
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('nickname', data.nickname);
+      localStorage.setItem('createdAt', data.createdAt);
+      localStorage.setItem('avatar', data.avatar ?? 0);
+
+      // Offer biometric registration after successful login
+      if (isBiometricAvailable() && !localStorage.getItem('biometric_enabled')) {
+        const useBio = confirm('Would you like to enable Face ID / Touch ID for faster login next time?');
+        if (useBio) {
+          localStorage.setItem('biometric_token', data.token);
+          localStorage.setItem('biometric_avatar', data.avatar ?? 0);
+          localStorage.setItem('biometric_createdAt', data.createdAt);
+          await registerBiometric(data.nickname);
+        }
+      }
+
+      window.location.href = '/pages/home.html';
     } else {
       showMessage(data.message);
     }

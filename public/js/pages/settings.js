@@ -1,40 +1,48 @@
-// SAVE + APPLY THEME
+function applyTheme(theme) {
+  document.body.classList.remove("light", "dark", "high");
+  document.body.classList.add(theme);
+}
 
-function setTheme(theme){
+function applyTextSize(size) {
+  const scale = size === "large" ? 1.25 : 1;
+  document.documentElement.style.setProperty("--text-scale", scale);
+}
+
+function setTheme(theme) {
   localStorage.setItem("theme", theme);
   applyTheme(theme);
 }
 
-function applyTheme(theme){
-
-  document.body.classList.remove("light", "dark", "high");
-
-  document.body.classList.add(theme);
-}
-
-// TEXT SIZE
-
-function setTextSize(size){
+function setTextSize(size) {
   localStorage.setItem("textSize", size);
   applyTextSize(size);
 }
 
-function applyTextSize(size){
-  let scale = 1;
+function bindSettingsButtons() {
+  const themeButtons = document.querySelectorAll("[data-theme]");
+  const textSizeButtons = document.querySelectorAll("[data-text-size]");
 
-  if(size === "large"){
-    scale = 1.25;
-  }
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setTheme(button.dataset.theme);
+    });
+  });
 
-  document.documentElement.style.setProperty("--text-scale", scale);
+  textSizeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setTextSize(button.dataset.textSize);
+    });
+  });
 }
 
-// LOAD SAVED SETTINGS
+window.setTheme = setTheme;
+window.setTextSize = setTextSize;
 
-window.onload = function(){
+document.addEventListener("DOMContentLoaded", () => {
   const theme = localStorage.getItem("theme") || "light";
   const size = localStorage.getItem("textSize") || "normal";
 
   applyTheme(theme);
   applyTextSize(size);
-}
+  bindSettingsButtons();
+});

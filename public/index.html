@@ -42,6 +42,11 @@
           class="input"
         />
         <button class="submit-btn" onclick="handleLogin()">Log In</button>
+
+        <!-- Biometric button - hidden by default, shown if biometric is set up -->
+        <button class="submit-btn" id="biometricBtn" onclick="loginWithBiometric()" style="display:none; margin-top:10px; background: linear-gradient(90deg, #34c759, #28a745);">
+          🔐 Use Face ID / Touch ID
+        </button>
       </div>
 
       <!-- Register Form -->
